@@ -17,11 +17,15 @@ public class CMakeElementTypes {
     public static final IElementType FOR_END = new CMakeElementType("FOR_END");
     public static final IElementType WHILE_BEGIN = new CMakeElementType("WHILE_BEGIN");
     public static final IElementType WHILE_END = new CMakeElementType("WHILE_END");
+    public static final IElementType ESCAPED_CHAR = new CMakeElementType("ESCAPED_CHAR");
+    public static final IElementType NUMBER = new CMakeElementType("NUMBER");
     public static final IElementType WHITE_SPACE = TokenType.WHITE_SPACE;
     public static final IElementType BAD_CHARACTER = TokenType.BAD_CHARACTER;
     public static final IElementType KEYWORD = new CMakeElementType("KEYWORD");
+    public static final IElementType IDENTIFIER = new CMakeElementType("IDENTIFIER");
     public static final IElementType STRING = new CMakeElementType("STRING");
     public static final IElementType COMMENT = new CMakeElementType("COMMENT");
+    public static final IElementType BLOCK_COMMENT = new CMakeElementType("BLOCK_COMMENT");
     public static final IElementType VAR = new CMakeElementType("VAR");
     public static final IElementType LEFT_BRACE = new CMakeElementType("LEFT_BRACE");
     public static final IElementType RIGHT_BRACE = new CMakeElementType("RIGHT_BRACE");

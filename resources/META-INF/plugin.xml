@@ -29,11 +29,15 @@
     <fileTypeFactory implementation="global.CMakeFileTypeFactory"/>
     <lang.parserDefinition language="CMake"
                            implementationClass="global.CMakeParserDefinition"/>
+    <!-- Registers the highlighter -->
     <lang.syntaxHighlighterFactory key="CMake"
                                    implementationClass="global.CMakeHighlighterFactory"/>
     <lang.braceMatcher language="CMake"
                        implementationClass="global.CMakeBraceMatcher"/>
-
+    <quoteHandler fileType="CMake" className="global.CMakeQuoteHandler"/>
+    <!-- Disable spellchecking of the keywords -->
+    <spellchecker.bundledDictionaryProvider implementation="global.CMakeBundledDictionaryProvider"/>
+    <colorSettingsPage implementation="global.CMakeColorsPage"/>
   </extensions>
 
   <application-components>

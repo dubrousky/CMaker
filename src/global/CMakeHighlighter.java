@@ -39,6 +39,45 @@ public class CMakeHighlighter extends SyntaxHighlighterBase {
             DefaultLanguageHighlighterColors.LINE_COMMENT
     );
 
+    public static final TextAttributesKey STRING = TextAttributesKey.createTextAttributesKey(
+            "CMAKE.STRING",
+            DefaultLanguageHighlighterColors.STRING
+    );
+
+    public static final TextAttributesKey BRACES = TextAttributesKey.createTextAttributesKey(
+            "CMAKE.BRACES",
+            DefaultLanguageHighlighterColors.BRACES
+    );
+
+    public static final TextAttributesKey BADCHAR = TextAttributesKey.createTextAttributesKey(
+            "CMAKE.BADCHAR",
+            DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE
+    );
+
+    public static final TextAttributesKey VAREXP = TextAttributesKey.createTextAttributesKey(
+            "CMAKE.VAREXP",
+            DefaultLanguageHighlighterColors.IDENTIFIER
+    );
+
+    public static final TextAttributesKey ESCAPED_CHAR = TextAttributesKey.createTextAttributesKey(
+            "CMAKE.ESCAPED_CHAR",
+            DefaultLanguageHighlighterColors.VALID_STRING_ESCAPE
+    );
+
+    public static final TextAttributesKey BLOCK_COMMENT = TextAttributesKey.createTextAttributesKey(
+            "CMAKE.BLOCK_COMMENT",
+            DefaultLanguageHighlighterColors.BLOCK_COMMENT
+    );
+
+    public static final TextAttributesKey NUMBER = TextAttributesKey.createTextAttributesKey(
+            "CMAKE.NUMBER",
+            DefaultLanguageHighlighterColors.NUMBER
+    );
+
+    public static final TextAttributesKey IDENTIFIER = TextAttributesKey.createTextAttributesKey(
+            "CMAKE.NUMBER",
+            DefaultLanguageHighlighterColors.IDENTIFIER
+    );
     /*
     public static final TextAttributesKey PROPERTY_VALUE = TextAttributesKey.createTextAttributesKey(
       "PROPERTIES.VALUE",
@@ -65,13 +104,23 @@ public class CMakeHighlighter extends SyntaxHighlighterBase {
         // TODO: Populate maps here
         keys1.put(CMakeElementTypes.KEYWORD, KEYWORD);
         keys1.put(CMakeElementTypes.COMMENT, COMMENT);
+        keys1.put(CMakeElementTypes.BLOCK_COMMENT, COMMENT);
+        keys1.put(CMakeElementTypes.STRING, STRING);
+        keys1.put(CMakeElementTypes.LEFT_BRACE, BRACES);
+        keys1.put(CMakeElementTypes.RIGHT_BRACE, BRACES);
+        keys1.put(CMakeElementTypes.BAD_CHARACTER, BADCHAR);
+        keys1.put(CMakeElementTypes.VAR, VAREXP);
+        keys1.put(CMakeElementTypes.ESCAPED_CHAR,ESCAPED_CHAR);
+        keys1.put(CMakeElementTypes.BLOCK_COMMENT,BLOCK_COMMENT);
+        keys1.put(CMakeElementTypes.NUMBER,NUMBER);
+        keys1.put(CMakeElementTypes.IDENTIFIER,IDENTIFIER);
     }
     @NotNull
     @Override
     public TextAttributesKey[] getTokenHighlights(IElementType iElementType) {
         return SyntaxHighlighterBase.pack(keys1.get(iElementType), keys2.get(iElementType));
     }
-
+    //TODO: Fill the map to use it in the ColorsPage
     public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<TextAttributesKey, Pair<String, HighlightSeverity>>(6);
 
 }
