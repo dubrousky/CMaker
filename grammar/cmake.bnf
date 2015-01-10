@@ -45,31 +45,35 @@
   ]
  }
 
- file         ::=  file_element*
- file_element ::=  line_ending+ | composite line_ending? | command_invocation line_ending?
- line_ending  ::=  ( line_comment | bracket_comment )? white_space
- block ::= bbegin body bend
- functionmacro ::= function | macro
- endfunctionmacro ::= endfunction | endmacro
- bbegin ::= functionmacro white_space* lpar arguments rpar line_ending+
- bend   ::= endfunctionmacro white_space* lpar argument rpar
 
-meta compound_expr  ::= <<begin>> file_element* <<end>>
+ file         ::=  file_element* <<eof>>
+ file_element ::= !<<eof>> composite  | !<<eof>> command_invocation
+ private line_ending  ::=  ( line_comment | bracket_comment )? 
+ 
+ meta compound_expr  ::= <<begin>> file_element* <<end>>
+ meta predicate_expr ::= <<pred>> file_element*
+ meta command_expr   ::= <<cmd>> lpar arguments rpar
+ 
+ block ::= <<compound_expr bbegin bend>>
+ private functionmacro ::= function | macro
+ private endfunctionmacro ::= endfunction | endmacro
+ bbegin ::= functionmacro lpar arguments rpar
+ bend   ::= endfunctionmacro lpar argument rpar
+ 
  loop   ::= <<compound_expr lbegin lend>>
- lbegin ::= ( foreach | while ) white_space* lpar arguments rpar line_ending+
- lend   ::= ( endforeach | endwhile ) white_space* lpar arguments rpar
- cond   ::= if_expr body ( elseiforelse_expr body )* endif_expr
- if_expr::= if white_space* lpar arguments rpar line_ending+
- body::= file_element+
- elseiforelse_expr::=elseiforelse white_space* lpar arguments rpar line_ending+
- endif_expr::= endif white_space* lpar arguments rpar
+ lbegin ::= <<command_expr ( foreach | while )>>
+ lend   ::= <<command_expr ( endforeach | endwhile )>>
+ cond   ::= <<predicate_expr if_expr>> <<predicate_expr elseiforelse_expr>>* endif_expr
+ if_expr::= <<command_expr (if)>>
+ elseiforelse_expr::=<<command_expr (elseiforelse)>>
+ endif_expr::= <<command_expr (endif)>>
  composite ::= loop | block | cond
- command_invocation  ::=  command_name white_space* lpar arguments rpar
+ command_invocation  ::=  <<command_expr command_name>>
  command_name        ::=  keyword | identifier
  
  arguments           ::=  argument? separated_argument*
- separated_argument  ::=  separation+ argument? | separation* lpar arguments rpar
- separation          ::=  line_ending
+ separated_argument  ::=  argument? | lpar arguments rpar
+
 
  argument            ::=  bracket_argument | quoted_argument | unquoted_argument | var_ref
  unquoted_argument   ::=  identifier

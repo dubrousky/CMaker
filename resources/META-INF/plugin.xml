@@ -39,7 +39,7 @@
                                    implementationClass="cmake.global.CMakeHighlighterFactory"/>
     <lang.braceMatcher language="CMake"
                        implementationClass="cmake.global.CMakeBraceMatcher"/>
-    <quoteHandler fileType="CMake" className="cmake.global.CMakeQuoteHandler"/>
+    <quoteHandler fileType="CMake" className="cmake.global.CMakeBCommentHandler"/>
     <!-- Disable spellchecking of the keywords -->
     <spellchecker.bundledDictionaryProvider implementation="cmake.global.CMakeBundledDictionaryProvider"/>
     <colorSettingsPage implementation="cmake.global.CMakeColorsPage"/>
