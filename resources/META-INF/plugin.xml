@@ -40,6 +40,7 @@
     <lang.braceMatcher language="CMake"
                        implementationClass="cmake.global.CMakeBraceMatcher"/>
     <quoteHandler fileType="CMake" className="cmake.global.CMakeBCommentHandler"/>
+    <quoteHandler fileType="CMake" className="cmake.global.CMakeQuoteHandler"/>
     <!-- Disable spellchecking of the keywords -->
     <spellchecker.bundledDictionaryProvider implementation="cmake.global.CMakeBundledDictionaryProvider"/>
     <colorSettingsPage implementation="cmake.global.CMakeColorsPage"/>
