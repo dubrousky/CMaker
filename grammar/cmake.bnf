@@ -1,53 +1,78 @@
 {
-  parserClass="parsing.CMakeParser"
+  parserClass="cmake.parsing.CMakeParser"
+  parserUtilClass="cmake.parsing.CMakeParserUtil"
  
   extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
  
   psiClassPrefix="CMake"
   psiImplClassSuffix="Impl"
-  psiPackage="psi"
-  psiImplPackage="psi.impl"
+  psiPackage="cmake.psi"
+  psiImplPackage="cmake.psi.impl"
  
-  elementTypeHolderClass="psi.CMakeTypes"
-  elementTypeClass="psi.CMakeElementType"
-  tokenTypeClass="psi.CMakeTokenType"
+  elementTypeHolderClass="cmake.psi.CMakeTypes"
+  elementTypeClass="cmake.psi.CMakeElementType"
+  tokenTypeClass="cmake.psi.CMakeTokenType"
+  
+  tokens = [
+    endfunction="regexp:endfunction"
+    function="regexp:function"
+    elseiforelse="regexp:elseif|else"
+    endif="regexp:endif"
+    if="regexp:if"
+    endmacro="regexp:endmacro"
+    macro="regexp:macro"
+    endforeach="regexp:endforeach"
+    foreach="regexp:foreach"
+    endwhile="regexp:endwhile"
+    while="regexp:while"
+    keyword="regexp:option|message"
+    lpar='('
+    rpar=')'
+    number='regexp:\d+(\.\d*)?'
+    bool='regexp:ON|OFF|TRUE|FALSE'
+    bracket_comment = 'regexp:(\#\[=*\[)(.|\n)*?(\]=*\])'
+    bracket_argument = 'regexp:(\[=*\[)(.|\n)*?(\]=*\])'
+    line_comment='regexp:\#.*'
+    var_ref='regexp:\$\{[A-Za-z][A-Za-z0-9_-]*\}'
+    escape_identity="regexp:\\\( | \\\) | \\\# | \\\" | (\\ ) | \\\\ | \\\$ | \\\@ | \\\^"
+    escape_encoded="regexp:\\t|\\r|\\n"
+    escape_semicolon="regexp:\\;"
+    quoted_argument='regexp:(")([^"]\\\n|[^"])*(")'
+    identifier='regexp:[A-Za-z][A-Za-z0-9_-]*'
+     op_and='regexp:AND'
+     op_or='regexp:OR'
+     op_not='regexp:NOT'
+  ]
  }
- 
+
  file         ::=  file_element*
- file_element ::=  command_invocation line_ending | (bracket_comment|space)* line_ending
- line_ending  ::=  line_comment? newline
- space        ::=  '[ \t]+'
- newline      ::=  '\n'
+ file_element ::=  line_ending+ | composite line_ending? | command_invocation line_ending?
+ line_ending  ::=  ( line_comment | bracket_comment )? white_space
+ block ::= bbegin body bend
+ functionmacro ::= function | macro
+ endfunctionmacro ::= endfunction | endmacro
+ bbegin ::= functionmacro white_space* lpar arguments rpar line_ending+
+ bend   ::= endfunctionmacro white_space* lpar argument rpar
+
+meta compound_expr  ::= <<begin>> file_element* <<end>>
+ loop   ::= <<compound_expr lbegin lend>>
+ lbegin ::= ( foreach | while ) white_space* lpar arguments rpar line_ending+
+ lend   ::= ( endforeach | endwhile ) white_space* lpar arguments rpar
+ cond   ::= if_expr body ( elseiforelse_expr body )* endif_expr
+ if_expr::= if white_space* lpar arguments rpar line_ending+
+ body::= file_element+
+ elseiforelse_expr::=elseiforelse white_space* lpar arguments rpar line_ending+
+ endif_expr::= endif white_space* lpar arguments rpar
+ composite ::= loop | block | cond
+ command_invocation  ::=  command_name white_space* lpar arguments rpar
+ command_name        ::=  keyword | identifier
  
- command_invocation  ::=  space* identifier space* '(' arguments ')'
- identifier          ::=  '[A-Za-z][A-Za-z0-9_]*'
- arguments           ::=  argument? separated_arguments*
- separated_arguments ::=  separation+ argument? |
-                          separation* '(' arguments ')'
- separation          ::=  space | line_ending
+ arguments           ::=  argument? separated_argument*
+ separated_argument  ::=  separation+ argument? | separation* lpar arguments rpar
+ separation          ::=  line_ending
+
+ argument            ::=  bracket_argument | quoted_argument | unquoted_argument | var_ref
+ unquoted_argument   ::=  identifier
  
- argument ::=  bracket_argument | quoted_argument | unquoted_argument
  
- bracket_argument ::=  bracket_open bracket_content bracket_close
- bracket_open     ::=  '[' '='+ '['
- bracket_content  ::=  '.*'
- bracket_close    ::=  ']' '='+ ']'
  
- quoted_argument     ::=  '"' quoted_element* '"'
- quoted_element      ::=  '[^\\\"]' | escape_sequence | quoted_continuation
- quoted_continuation ::=  '\' newline
- 
- unquoted_argument ::=  unquoted_element+
- unquoted_element  ::=  '[^ \(\)\#\"\\]' | escape_sequence
- 
- escape_sequence  ::=  escape_identity | escape_encoded | escape_semicolon
- escape_identity  ::=  '\(' | '\)' | '\#' | '\"' | '\ ' |
-                       '\\' | '\$' | '\@' | '\^'
- escape_encoded   ::=  '\t' | '\r' | '\n'
- escape_semicolon ::=  '\;'
- 
- bracket_comment ::=  '#' bracket_argument
- 
- line_comment ::=  '#'
- 
- var_ref ::= '${' identifier '}'

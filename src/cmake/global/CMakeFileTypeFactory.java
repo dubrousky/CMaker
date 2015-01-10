@@ -1,4 +1,4 @@
-package global;
+package cmake.global;
 
 import com.intellij.openapi.fileTypes.FileTypeConsumer;
 import com.intellij.openapi.fileTypes.FileTypeFactory;
@@ -10,6 +10,6 @@ public class CMakeFileTypeFactory extends FileTypeFactory {
 
     @Override
     public void createFileTypes(FileTypeConsumer fileTypeConsumer) {
-        fileTypeConsumer.consume(new CMakeFileType());
+        fileTypeConsumer.consume(CMakeFileType.INSTANCE,"cmake");
     }
 }

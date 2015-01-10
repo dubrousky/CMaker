@@ -1,4 +1,4 @@
-package global;
+package cmake.global;
 
 /**
  * Created by alex on 12/27/14.

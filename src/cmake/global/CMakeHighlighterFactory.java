@@ -1,4 +1,4 @@
-package global;
+package cmake.global;
 
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory;

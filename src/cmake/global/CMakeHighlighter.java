@@ -1,4 +1,4 @@
-package global;
+package cmake.global;
 
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.lexer.Lexer;
@@ -6,11 +6,12 @@ import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.openapi.util.Pair;
+import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
-import parsing.CMakeElementTypes;
-import parsing.CMakeLexer;
+import cmake.psi.CMakeTypes;
+import cmake.parsing.CMakeLexer;
 
 import java.util.Map;
 
@@ -78,42 +79,23 @@ public class CMakeHighlighter extends SyntaxHighlighterBase {
             "CMAKE.NUMBER",
             DefaultLanguageHighlighterColors.IDENTIFIER
     );
-    /*
-    public static final TextAttributesKey PROPERTY_VALUE = TextAttributesKey.createTextAttributesKey(
-      "PROPERTIES.VALUE",
-      DefaultLanguageHighlighterColors.STRING
-    );
 
-
-    public static final TextAttributesKey PROPERTY_KEY_VALUE_SEPARATOR = TextAttributesKey.createTextAttributesKey(
-      "PROPERTIES.KEY_VALUE_SEPARATOR",
-      DefaultLanguageHighlighterColors.OPERATION_SIGN
-    );
-    public static final TextAttributesKey PROPERTIES_VALID_STRING_ESCAPE = TextAttributesKey.createTextAttributesKey(
-      "PROPERTIES.VALID_STRING_ESCAPE",
-      DefaultLanguageHighlighterColors.VALID_STRING_ESCAPE
-    );
-    public static final TextAttributesKey PROPERTIES_INVALID_STRING_ESCAPE = TextAttributesKey.createTextAttributesKey(
-      "PROPERTIES.INVALID_STRING_ESCAPE",
-      DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE
-    );
-      */
     static {
         keys1 = new THashMap<IElementType, TextAttributesKey>();
         keys2 = new THashMap<IElementType, TextAttributesKey>();
         // TODO: Populate maps here
-        keys1.put(CMakeElementTypes.KEYWORD, KEYWORD);
-        keys1.put(CMakeElementTypes.COMMENT, COMMENT);
-        keys1.put(CMakeElementTypes.BLOCK_COMMENT, COMMENT);
-        keys1.put(CMakeElementTypes.STRING, STRING);
-        keys1.put(CMakeElementTypes.LEFT_BRACE, BRACES);
-        keys1.put(CMakeElementTypes.RIGHT_BRACE, BRACES);
-        keys1.put(CMakeElementTypes.BAD_CHARACTER, BADCHAR);
-        keys1.put(CMakeElementTypes.VAR, VAREXP);
-        keys1.put(CMakeElementTypes.ESCAPED_CHAR,ESCAPED_CHAR);
-        keys1.put(CMakeElementTypes.BLOCK_COMMENT,BLOCK_COMMENT);
-        keys1.put(CMakeElementTypes.NUMBER,NUMBER);
-        keys1.put(CMakeElementTypes.IDENTIFIER,IDENTIFIER);
+        //keys1.put(CMakeTypes.IDENTIFIER, KEYWORD);
+        keys1.put(CMakeTypes.LINE_COMMENT, COMMENT);
+        keys1.put(CMakeTypes.BRACKET_COMMENT, COMMENT);
+        keys1.put(CMakeTypes.QUOTED_ARGUMENT, STRING);
+        keys1.put(CMakeTypes.LPAR, BRACES);
+        keys1.put(CMakeTypes.RPAR, BRACES);
+        keys1.put(TokenType.BAD_CHARACTER, BADCHAR);
+        keys1.put(CMakeTypes.VAR_REF, VAREXP);
+        //keys1.put(CMakeTypes.ESCAPED_CHAR,ESCAPED_CHAR);
+        keys1.put(CMakeTypes.BRACKET_COMMENT,BLOCK_COMMENT);
+        keys1.put(CMakeTypes.NUMBER,NUMBER);
+        //keys1.put(CMakeTypes.IDENTIFIER,IDENTIFIER);
     }
     @NotNull
     @Override

@@ -1,5 +1,5 @@
 <idea-plugin version="2">
-  <id>com.yourcompany.unique.plugin.id</id>
+  <id>cmake</id>
   <name>CMake Plugin</name>
   <version>1.0</version>
   <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
@@ -25,19 +25,30 @@
   -->
 
   <extensions defaultExtensionNs="com.intellij">
+    <!-- Templates -->
+    <internalFileTemplate name="Executable"/>
+    <internalFileTemplate name="Static Library"/>
+    <internalFileTemplate name="Dynamic Library"/>
     <!-- Add your extensions here -->
-    <fileTypeFactory implementation="global.CMakeFileTypeFactory"/>
+    <fileTypeFactory implementation="cmake.global.CMakeFileTypeFactory"/>
+    <!-- Register parser definition -->
     <lang.parserDefinition language="CMake"
-                           implementationClass="global.CMakeParserDefinition"/>
+                           implementationClass="cmake.global.CMakeParserDefinition"/>
     <!-- Registers the highlighter -->
     <lang.syntaxHighlighterFactory key="CMake"
-                                   implementationClass="global.CMakeHighlighterFactory"/>
+                                   implementationClass="cmake.global.CMakeHighlighterFactory"/>
     <lang.braceMatcher language="CMake"
-                       implementationClass="global.CMakeBraceMatcher"/>
-    <quoteHandler fileType="CMake" className="global.CMakeQuoteHandler"/>
+                       implementationClass="cmake.global.CMakeBraceMatcher"/>
+    <quoteHandler fileType="CMake" className="cmake.global.CMakeQuoteHandler"/>
     <!-- Disable spellchecking of the keywords -->
-    <spellchecker.bundledDictionaryProvider implementation="global.CMakeBundledDictionaryProvider"/>
-    <colorSettingsPage implementation="global.CMakeColorsPage"/>
+    <spellchecker.bundledDictionaryProvider implementation="cmake.global.CMakeBundledDictionaryProvider"/>
+    <colorSettingsPage implementation="cmake.global.CMakeColorsPage"/>
+    <lang.findUsagesProvider language="CMake" implementationClass="cmake.global.CMakeFindUsagesProvider"/>
+    <lang.namesValidator language="CMake" implementationClass="cmake.global.CMakeNamesValidator"/>
+    <lang.foldingBuilder language="CMake" implementationClass="cmake.global.CMakeFoldingBuilder"/>
+    <!-- Icons for various file types-->
+    <iconProvider implementation="cmake.global.CMakeIconProvider"/>
+    <!--<lang.psiStructureViewFactory language="CMake" implementationClass="cmake.global.CMakeStructureViewFactory"/>-->
   </extensions>
 
   <application-components>
@@ -50,6 +61,7 @@
 
   <actions>
     <!-- Add your actions here -->
+    
   </actions>
 
 </idea-plugin>

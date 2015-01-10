@@ -1,4 +1,4 @@
-package global;
+package cmake.global;
 
 import com.intellij.lang.BracePair;
 import com.intellij.lang.PairedBraceMatcher;
@@ -6,7 +6,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import parsing.CMakeElementTypes;
+import cmake.psi.CMakeTypes;
 
 /**
  * Created by alex on 12/23/14.
@@ -14,7 +14,7 @@ import parsing.CMakeElementTypes;
 public class CMakeBraceMatcher implements PairedBraceMatcher {
 
     private static final BracePair[] PAIRS = new BracePair[]{
-            new BracePair(CMakeElementTypes.LEFT_BRACE, CMakeElementTypes.RIGHT_BRACE, true)//,
+            new BracePair(CMakeTypes.LPAR, CMakeTypes.RPAR, true)//,
             //new BracePair(CMakeElementTypes.LEFT_PAR, CMakeElementTypes.RIGHT_PAR, false),
             //new BracePair(CMakeElementTypes.LEFT_ASSOCIATION, CMakeElementTypes.RIGHT_ASSOCIATION, false),
             //new BracePair(CMakeElementTypes.LEFT_BRACKET, CMakeElementTypes.RIGHT_BRACKET, true),

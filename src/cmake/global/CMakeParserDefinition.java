@@ -1,6 +1,7 @@
-package global;
+package cmake.global;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.Language;
 import com.intellij.lang.ParserDefinition;
 import com.intellij.lang.PsiParser;
 import com.intellij.lexer.Lexer;
@@ -11,13 +12,15 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
-import parsing.CMakeElementTypes;
-import parsing.CMakeLexer;
+import cmake.psi.CMakeTypes;
+import cmake.parsing.CMakeLexer;
+import cmake.parsing.CMakeParser;
 
 /**
  * Created by alex on 12/21/14.
  */
 public class CMakeParserDefinition implements ParserDefinition {
+    public static final IFileElementType FILE = new IFileElementType(Language.<CMakeLanguage>findInstance(CMakeLanguage.class));
     @NotNull
     @Override
     public Lexer createLexer(Project project) {
@@ -31,34 +34,34 @@ public class CMakeParserDefinition implements ParserDefinition {
 
     @Override
     public IFileElementType getFileNodeType() {
-        return null;//CMakeElementTypes.FILE;
+        return FILE;
     }
 
     @NotNull
     @Override
     public TokenSet getWhitespaceTokens() {
-        return CMakeElementTypes.WHITESPACES;
+        return TokenSet.create(CMakeTypes.WHITE_SPACE);
     }
 
     @NotNull
     @Override
     public TokenSet getCommentTokens() {
-        return CMakeElementTypes.COMMENTS;
+        return TokenSet.create(CMakeTypes.LINE_COMMENT,CMakeTypes.BRACKET_COMMENT);
     }
 
     @NotNull
     @Override
-    public TokenSet getStringLiteralElements() { return CMakeElementTypes.STRINGS; }
+    public TokenSet getStringLiteralElements() { return TokenSet.create(CMakeTypes.QUOTED_ARGUMENT); }
 
     @NotNull
     @Override
     public PsiElement createElement(ASTNode astNode) {
-        return null;
+        return CMakeTypes.Factory.createElement(astNode);
     }
 
     @Override
     public PsiFile createFile(FileViewProvider fileViewProvider) {
-        return null;//new CMakeFileImpl(fileViewProvider);
+        return new CMakeFile(fileViewProvider);
     }
 
     @Override

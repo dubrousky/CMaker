@@ -1,7 +1,6 @@
-package parsing;
+package cmake.parsing;
 
 import com.intellij.lexer.FlexAdapter;
-import parsing.*;
 
 import java.io.Reader;
 

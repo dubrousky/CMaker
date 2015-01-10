@@ -1,7 +1,7 @@
-package parsing;
+package cmake.psi;
 
 import com.intellij.psi.tree.IElementType;
-import global.CMakeLanguage;
+import cmake.global.CMakeLanguage;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,5 +14,8 @@ public class CMakeElementType extends IElementType {
         super(debugName, CMakeLanguage.INSTANCE);
     }
 
-
+    @Override
+    public String toString() {
+        return "CMake:" + super.toString();
+    }
 }

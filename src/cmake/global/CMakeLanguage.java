@@ -1,4 +1,4 @@
-package global;
+package cmake.global;
 
 import com.intellij.lang.Language;
 
