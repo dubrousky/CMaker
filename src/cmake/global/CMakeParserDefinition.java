@@ -11,6 +11,7 @@ import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import org.intellij.plugins.relaxNG.compact.RncTokenTypes;
@@ -23,6 +24,10 @@ import cmake.parsing.CMakeParser;
  * Created by alex on 12/21/14.
  */
 public class CMakeParserDefinition implements ParserDefinition {
+    public static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
+    public static final TokenSet COMMENTS = TokenSet.create(CMakeTypes.LINE_COMMENT,
+            CMakeTypes.BRACKET_COMMENT);
+    public static final TokenSet STRINGS = TokenSet.create(CMakeTypes.QUOTED_ARGUMENT);
     public static final IFileElementType FILE = new IFileElementType(Language.<CMakeLanguage>findInstance(CMakeLanguage.class));
     @NotNull
     @Override
@@ -43,18 +48,17 @@ public class CMakeParserDefinition implements ParserDefinition {
     @NotNull
     @Override
     public TokenSet getWhitespaceTokens() {
-        return TokenSet.create(com.intellij.psi.TokenType.WHITE_SPACE);
+        return WHITE_SPACES;
     }
 
     @NotNull
     @Override
     public TokenSet getCommentTokens() {
-        return TokenSet.create(CMakeTypes.LINE_COMMENT,CMakeTypes.BRACKET_COMMENT);
+        return COMMENTS;
     }
-
     @NotNull
     @Override
-    public TokenSet getStringLiteralElements() { return TokenSet.create(CMakeTypes.QUOTED_ARGUMENT); }
+    public TokenSet getStringLiteralElements() { return STRINGS; }
 
     @NotNull
     @Override
@@ -69,7 +73,7 @@ public class CMakeParserDefinition implements ParserDefinition {
 
     @Override
     public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode astNode, ASTNode astNode1) {
-        // Tune the separator behavior between the tockens
+        // Tune the separator behavior between the tokens
         if( astNode.getElementType() == CMakeTypes.FILE_ELEMENT 
                 && !getCommentTokens().contains(astNode1.getElementType())  )
             return SpaceRequirements.MUST_LINE_BREAK;

@@ -10,15 +10,15 @@ import cmake.psi.CMakeTypes;
 
 public class CMakeCommenter implements CodeDocumentationAwareCommenter {
     public String getLineCommentPrefix() {
-        return "# ";
+        return "#";
     }
 
     public String getBlockCommentPrefix() {
-        return "#[";
+        return "#[[";
     }
 
     public String getBlockCommentSuffix() {
-        return "]";
+        return "]]";
     }
 
     public String getCommentedBlockCommentPrefix() {
@@ -31,6 +31,7 @@ public class CMakeCommenter implements CodeDocumentationAwareCommenter {
 
     @Override
     public IElementType getLineCommentTokenType() {
+        
         return CMakeTypes.LINE_COMMENT;
     }
 

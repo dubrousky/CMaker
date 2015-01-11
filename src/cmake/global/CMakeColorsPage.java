@@ -1,14 +1,17 @@
 package cmake.global;
 
+
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
 import com.intellij.openapi.options.colors.AttributesDescriptor;
 import com.intellij.openapi.options.colors.ColorDescriptor;
 import com.intellij.openapi.options.colors.ColorSettingsPage;
+import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.util.Map;
+
 
 /**
  * Created by alex on 12/27/14.
@@ -54,16 +57,32 @@ public class CMakeColorsPage implements ColorSettingsPage {
     public String getDemoText() {
         return "# Single line comment\n" +
                 "project(HELLO)\n" +
-                "[[\n" +
-                "Multiline comment \n" +
+                "#[[\n" +
+                "   Multiline comment \n" +
                 "]]\n" +
                 "if(WIN32)\n" +
                 "   add_executable(hello hello.cxx)\n" +
-                "endif(WIN32)"
+                "endif(WIN32)\n" +
+                "function(test)\n" +
+                "   message(\"Error\")\n" +
+                "   return(${var})\n" +
+                "endfunction()\n"
                 ;
     }
 
+    private static Map<String, TextAttributesKey> ATTRIBUTES_KEY_MAP = ContainerUtil.newHashMap();
+
+    static {
+        
+        ATTRIBUTES_KEY_MAP.put("k", CMakeHighlighter.KEYWORD);
+        ATTRIBUTES_KEY_MAP.put("s", CMakeHighlighter.STRING);
+        ATTRIBUTES_KEY_MAP.put("c", CMakeHighlighter.COMMENT);
+        ATTRIBUTES_KEY_MAP.put("bc", CMakeHighlighter.BLOCK_COMMENT);
+        ATTRIBUTES_KEY_MAP.put("i", CMakeHighlighter.IDENTIFIER);
+        
+        
+    }
     public Map<String, TextAttributesKey> getAdditionalHighlightingTagToDescriptorMap() {
-        return null;
+        return ATTRIBUTES_KEY_MAP;
     }
 }

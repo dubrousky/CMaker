@@ -40,7 +40,9 @@ public class CMakeFoldingBuilder extends FoldingBuilderEx implements DumbAware {
                     if (TokenSet.create(CMakeTypes.LINE_COMMENT,
                                         CMakeTypes.BRACKET_COMMENT,
                                         CMakeTypes.BLOCK,
-                                        CMakeTypes.LOOP
+                                        CMakeTypes.LOOP,
+                                        CMakeTypes.PREDICATE_EXPR,
+                                        CMakeTypes.COND
                     ).contains(element.getNode().getElementType()) && element.getTextRange().getLength() > 2) {
                         result.add(new FoldingDescriptor(element, element.getTextRange()));
                     }
@@ -67,9 +69,13 @@ public class CMakeFoldingBuilder extends FoldingBuilderEx implements DumbAware {
         {
             return node.findChildByType(CMakeTypes.COMPOUND_EXPR).findChildByType(CMakeTypes.LBEGIN).getText()+" ...";
         }
+        if (CMakeTypes.PREDICATE_EXPR == type)
+        {
+            return node.getFirstChildNode().getText()+" ...";
+        }
         if (CMakeTypes.COND == type)
         {
-            return node.findChildByType(CMakeTypes.COMPOUND_EXPR).findChildByType(CMakeTypes.IF_EXPR).getText()+" ...";
+            return node.getFirstChildNode().getText()+" ...";
         }
         return null;
     }
