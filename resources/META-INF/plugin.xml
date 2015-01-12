@@ -48,9 +48,12 @@
     <lang.namesValidator language="CMake" implementationClass="cmake.global.CMakeNamesValidator"/>
     <lang.foldingBuilder language="CMake" implementationClass="cmake.global.CMakeFoldingBuilder"/>
     <lang.formatter language="CMake" implementationClass="cmake.format.CMakeFormattingModuleBuilder"/>
+    <lang.commenter language="CMake" implementationClass="cmake.global.CMakeCommenter"/>
     <!-- Icons for various file types-->
     <iconProvider implementation="cmake.global.CMakeIconProvider"/>
     <lang.psiStructureViewFactory language="CMake" implementationClass="cmake.global.CMakeStructureViewFactory"/>
+    <!-- Sdk -->
+    <sdkType implementation="cmake.sdk.CMakeSdkType"/>
   </extensions>
 
   <application-components>
