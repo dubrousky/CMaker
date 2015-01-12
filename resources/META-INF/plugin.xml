@@ -52,6 +52,7 @@
     <!-- Icons for various file types-->
     <iconProvider implementation="cmake.global.CMakeIconProvider"/>
     <lang.psiStructureViewFactory language="CMake" implementationClass="cmake.global.CMakeStructureViewFactory"/>
+    <completion.contributor implementationClass="cmake.global.CMakeCompletionContributor"/>
     <!-- Sdk -->
     <sdkType implementation="cmake.sdk.CMakeSdkType"/>
   </extensions>

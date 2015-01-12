@@ -31,17 +31,17 @@ public class CMakeHighlighter extends SyntaxHighlighterBase {
     // TODO: Add mapping between token and its highlighting properties
 
     public static final TextAttributesKey KEYWORD = TextAttributesKey.createTextAttributesKey(
-        "CMAKE.KEY",
+        "Keyword",
         DefaultLanguageHighlighterColors.KEYWORD
       );
 
     public static final TextAttributesKey COMMENT = TextAttributesKey.createTextAttributesKey(
-            "CMAKE.LINE_COMMENT",
+            "Line comment",
             DefaultLanguageHighlighterColors.LINE_COMMENT
     );
 
     public static final TextAttributesKey STRING = TextAttributesKey.createTextAttributesKey(
-            "CMAKE.STRING",
+            "Srting literal",
             DefaultLanguageHighlighterColors.STRING
     );
 
@@ -87,7 +87,8 @@ public class CMakeHighlighter extends SyntaxHighlighterBase {
         keys1.put(CMakeTypes.FUNCTION, KEYWORD);
         keys1.put(CMakeTypes.ENDFUNCTION, KEYWORD);
         keys1.put(CMakeTypes.IF, KEYWORD);
-        keys1.put(CMakeTypes.ELSEIFORELSE,KEYWORD);
+        keys1.put(CMakeTypes.ELSEIF,KEYWORD);
+        keys1.put(CMakeTypes.ELSE,KEYWORD);
         keys1.put(CMakeTypes.ENDIF, KEYWORD);
         keys1.put(CMakeTypes.MACRO, KEYWORD);
         keys1.put(CMakeTypes.ENDMACRO, KEYWORD);

@@ -14,9 +14,13 @@
   tokenTypeClass="cmake.psi.CMakeTokenType"
   
   tokens = [
+    op_and='regexp:AND'
+    op_or='regexp:OR'
+    op_not='regexp:NOT'
     endfunction="regexp:endfunction"
     function="regexp:function"
-    elseiforelse="regexp:elseif|else"
+    elseif="regexp:elseif"
+    else="regexp:else"
     endif="regexp:endif"
     if="regexp:if"
     endmacro="regexp:endmacro"
@@ -25,60 +29,71 @@
     foreach="regexp:foreach"
     endwhile="regexp:endwhile"
     while="regexp:while"
-    keyword="regexp:option|message"
+    keyword="regexp:option|message|project"
     lpar='('
     rpar=')'
     number='regexp:\d+(\.\d*)?'
     bool='regexp:ON|OFF|TRUE|FALSE'
-    bracket_comment = 'regexp:(\#\[=*\[)(.|\n)*?(\]=*\])'
-    bracket_argument = 'regexp:(\[=*\[)(.|\n)*?(\]=*\])'
+    bracket_comment = 'regexp:(\#\[=*\[)([^\]]|\n)*?(\]=*\])'
+    bracket_argument = 'regexp:(\[=*\[)([^\]]|\n)*?(\]=*\])'
     line_comment='regexp:\#.*'
     var_ref='regexp:\$\{[A-Za-z][A-Za-z0-9_-]*\}'
     escape_identity="regexp:\\\( | \\\) | \\\# | \\\" | (\\ ) | \\\\ | \\\$ | \\\@ | \\\^"
     escape_encoded="regexp:\\t|\\r|\\n"
     escape_semicolon="regexp:\\;"
+    sep=';'
     quoted_argument='regexp:(")([^"]\\\n|[^"])*(")'
     identifier='regexp:[A-Za-z][A-Za-z0-9_-]*'
-     op_and='regexp:AND'
-     op_or='regexp:OR'
-     op_not='regexp:NOT'
   ]
  }
 
 
  file         ::=  file_element* <<eof>>
- file_element ::= !<<eof>> composite  | !<<eof>> command_invocation | line_comment | bracket_comment
+ file_element ::= !<<eof>> composite          |
+                  !<<eof>> command_invocation |
+                  line_comment                |
+                  bracket_comment
  private line_ending  ::=  ( line_comment | bracket_comment )? 
  
  meta compound_expr  ::= <<begin>> file_element* <<end>> { pin=1 }
  meta predicate_expr ::= <<pred>> file_element*
  meta command_expr   ::= <<cmd>> '(' arguments ')' { pin=2 }
- meta seq            ::= <<e>> (<<sep>> <<e>>)*
+ meta seq            ::= <<e>> (<<sep>>? <<e>>)*
  
- block ::= <<compound_expr bbegin bend>>
- private functionmacro ::= function | macro
- private endfunctionmacro ::= endfunction | endmacro
- bbegin ::= <<command_expr functionmacro>>
- bend   ::= <<command_expr endfunctionmacro>>
- 
+ // Function/macro definition
+ block  ::= <<compound_expr bbegin bend>>
+ bbegin ::= <<command_expr (function | macro)>>
+ bend   ::= <<command_expr (endfunction | endmacro)>>
+ // Loop block
  loop   ::= <<compound_expr lbegin lend>>
  lbegin ::= <<command_expr ( foreach | while )>>
  lend   ::= <<command_expr ( endforeach | endwhile )>>
- 
- cond   ::= if_expr file_element* <<predicate_expr elseiforelse_expr>>* endif_expr { pin=1 }
- if_expr::= <<command_expr (if)>>
- elseiforelse_expr::=<<command_expr (elseiforelse)>>
- endif_expr::= <<command_expr (endif)>>
+ // Condition block
+ cond             ::= if_expr 
+                        file_element* 
+                        <<predicate_expr (elseif_expr)>>*
+                        <<predicate_expr (else_expr)>>*
+                      endif_expr { pin=1 }
+ if_expr          ::= <<command_expr (if)>>
+ elseif_expr      ::= <<command_expr (elseif)>>
+ else_expr        ::= <<command_expr (else)>>
+ endif_expr       ::= <<command_expr (endif)>>
  
  composite ::= loop | block | cond
+ 
+ // Single command invocation
  command_invocation  ::=  <<command_expr command_name>>
  command_name        ::=  keyword | identifier
  
- arguments           ::=  argument? separated_argument*
- separated_argument  ::=  argument | '(' arguments ')'
+ arguments           ::=  argument? bracket_comment*  separated_argument*
+ separated_argument  ::=  ( sep? argument | '(' arguments ')')
 
 
- argument            ::=  bracket_argument | quoted_argument | unquoted_argument | var_ref
+ argument            ::=    bracket_argument |
+                            quoted_argument  |
+                            unquoted_argument|
+                            var_ref
+                            
  unquoted_argument   ::=  identifier
  
  
