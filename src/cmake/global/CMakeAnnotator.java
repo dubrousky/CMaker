@@ -3,6 +3,7 @@ package cmake.global;
 import cmake.psi.CMakeArgument;
 import cmake.psi.CMakeCommandName;
 import cmake.psi.CMakeIfExpr;
+import cmake.psi.CMakeTypes;
 import com.intellij.lang.annotation.Annotation;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
@@ -11,6 +12,8 @@ import com.intellij.openapi.editor.SyntaxHighlighterColors;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiUtil;
+import com.intellij.psi.util.PsiUtilBase;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -127,6 +130,25 @@ public class CMakeAnnotator implements Annotator {
 //                    holder.createErrorAnnotation(range, "Unresolved property");
 //
             }
+        }
+        else if(psiElement.getNode().getElementType()== CMakeTypes.IF
+                ||psiElement.getNode().getElementType()== CMakeTypes.ELSE
+                ||psiElement.getNode().getElementType()== CMakeTypes.ELSEIF
+                ||psiElement.getNode().getElementType()== CMakeTypes.ENDIF
+                ||psiElement.getNode().getElementType()== CMakeTypes.FUNCTION
+                ||psiElement.getNode().getElementType()== CMakeTypes.MACRO
+                ||psiElement.getNode().getElementType()== CMakeTypes.ENDFUNCTION
+                ||psiElement.getNode().getElementType()== CMakeTypes.ENDMACRO
+                ||psiElement.getNode().getElementType()== CMakeTypes.WHILE
+                ||psiElement.getNode().getElementType()== CMakeTypes.FOREACH
+                ||psiElement.getNode().getElementType()== CMakeTypes.ENDWHILE
+                ||psiElement.getNode().getElementType()== CMakeTypes.ENDFOREACH
+                )
+        {
+                TextRange range = new TextRange(psiElement.getTextRange().getStartOffset(),
+                        psiElement.getTextRange().getStartOffset() + psiElement.getTextRange().getLength());
+                Annotation annotation = annotationHolder.createInfoAnnotation(range, null);
+                annotation.setTextAttributes(DefaultLanguageHighlighterColors.KEYWORD);
         }
     }
 }
