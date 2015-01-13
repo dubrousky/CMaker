@@ -1,5 +1,6 @@
 package cmake.global;
 
+import cmake.psi.CMakeArgument;
 import cmake.psi.CMakeTypes;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -13,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 public class CMakeCompletionContributor extends CompletionContributor {
     public CMakeCompletionContributor() {
         extend(CompletionType.BASIC,
-                PlatformPatterns.psiElement(CMakeTypes.IF_EXPR).withLanguage(CMakeLanguage.INSTANCE),
+                PlatformPatterns.psiElement(CMakeTypes.ARGUMENTS).withLanguage(CMakeLanguage.INSTANCE),
                 new CompletionProvider<CompletionParameters>() {
                     public void addCompletions(@NotNull CompletionParameters parameters,
                                                ProcessingContext context,

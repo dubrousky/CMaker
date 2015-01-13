@@ -22,30 +22,31 @@ public class CMakeFormattingModuleBuilder implements FormattingModelBuilder {
     @NotNull
     @Override
     public FormattingModel createModel(PsiElement element, CodeStyleSettings settings) {
-        CommonCodeStyleSettings commonSettings = settings.getCommonSettings(CMakeLanguage.INSTANCE);
+
         CMakeCodeStyleSettings cmakeSettings = settings.getCustomSettings(CMakeCodeStyleSettings.class);
-        SpacingBuilder spacingBuilder = createSpacingBuilder(commonSettings, cmakeSettings);
+        SpacingBuilder spacingBuilder = createSpacingBuilder(settings, cmakeSettings);
         CMakeFormattingBlock block = new CMakeFormattingBlock(element.getNode(), 
                                                                 null,
                                                                 null,
                                                                 null,
-                                                                commonSettings,
+                                                                settings,
                                                                 cmakeSettings,
                                                                 spacingBuilder,
                                                                 -1);
         return FormattingModelProvider.createFormattingModelForPsiFile(element.getContainingFile(), block, settings);
     }
 
-    private static SpacingBuilder createSpacingBuilder(@NotNull CommonCodeStyleSettings settings,
+    private static SpacingBuilder createSpacingBuilder(@NotNull CodeStyleSettings settings,
                                                        CMakeCodeStyleSettings cmakeSettings) {
         
         //noinspection SuspiciousNameCombination
-        return new SpacingBuilder(settings.getRootSettings(), CMakeLanguage.INSTANCE)
+        return new SpacingBuilder(settings, CMakeLanguage.INSTANCE)
                 .after(CMakeTypes.ARGUMENT).spaceIf(true)
                 .after(CMakeTypes.PREDICATE_EXPR).lineBreakInCodeIf(true)
                 .after(CMakeTypes.COMMAND_EXPR).lineBreakInCodeIf(true)
                 .after(CMakeTypes.COMMAND_NAME).spaceIf(true)
-                .after(CMakeTypes.KEYWORD).spaceIf(true)
+                .after(CMakeTypes.IDENTIFIER).spaceIf(true)
+                .around(CMakeTypes.SEP).spaceIf(true)
                 ;
         
     }

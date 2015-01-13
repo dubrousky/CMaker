@@ -84,19 +84,6 @@ public class CMakeHighlighter extends SyntaxHighlighterBase {
         keys1 = new THashMap<IElementType, TextAttributesKey>();
         keys2 = new THashMap<IElementType, TextAttributesKey>();
         // TODO: Populate maps here
-        keys1.put(CMakeTypes.FUNCTION, KEYWORD);
-        keys1.put(CMakeTypes.ENDFUNCTION, KEYWORD);
-        keys1.put(CMakeTypes.IF, KEYWORD);
-        keys1.put(CMakeTypes.ELSEIF,KEYWORD);
-        keys1.put(CMakeTypes.ELSE,KEYWORD);
-        keys1.put(CMakeTypes.ENDIF, KEYWORD);
-        keys1.put(CMakeTypes.MACRO, KEYWORD);
-        keys1.put(CMakeTypes.ENDMACRO, KEYWORD);
-        keys1.put(CMakeTypes.FOREACH, KEYWORD);
-        keys1.put(CMakeTypes.ENDFOREACH, KEYWORD);
-        keys1.put(CMakeTypes.WHILE, KEYWORD);
-        keys1.put(CMakeTypes.ENDWHILE, KEYWORD);
-        keys1.put(CMakeTypes.KEYWORD, KEYWORD);
         keys1.put(CMakeTypes.LINE_COMMENT, COMMENT);
         keys1.put(CMakeTypes.BRACKET_COMMENT, COMMENT);
         keys1.put(CMakeTypes.QUOTED_ARGUMENT, STRING);
@@ -108,6 +95,7 @@ public class CMakeHighlighter extends SyntaxHighlighterBase {
         keys1.put(CMakeTypes.BRACKET_COMMENT,BLOCK_COMMENT);
         keys1.put(CMakeTypes.NUMBER,NUMBER);
         keys1.put(CMakeTypes.IDENTIFIER,IDENTIFIER);
+        // Keywords moved to the annotator
     }
     @NotNull
     @Override

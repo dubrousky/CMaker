@@ -29,7 +29,6 @@
     foreach="regexp:foreach"
     endwhile="regexp:endwhile"
     while="regexp:while"
-    keyword="regexp:option|message|project"
     lpar='('
     rpar=')'
     number='regexp:\d+(\.\d*)?'
@@ -83,7 +82,7 @@
  
  // Single command invocation
  command_invocation  ::=  <<command_expr command_name>>
- command_name        ::=  keyword | identifier
+ command_name        ::=  identifier
  
  arguments           ::=  argument? bracket_comment*  separated_argument*
  separated_argument  ::=  ( sep? argument | '(' arguments ')')
