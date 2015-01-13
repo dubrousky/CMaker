@@ -54,8 +54,8 @@
                   bracket_comment
  private line_ending  ::=  ( line_comment | bracket_comment )? 
  
- meta compound_expr  ::= <<begin>> file_element* <<end>> { pin=1 }
- meta predicate_expr ::= <<pred>> file_element*
+ meta compound_expr  ::= <<begin>> (command_invocation|cond|loop)* <<end>> { pin=1 }
+ meta predicate_expr ::= <<pred>> (command_invocation|cond|loop)*
  meta command_expr   ::= <<cmd>> '(' arguments ')' { pin=2 }
  meta seq            ::= <<e>> (<<sep>>? <<e>>)*
  

@@ -59,6 +59,8 @@
     <!-- Code style -->
     <codeStyleSettingsProvider implementation="cmake.format.CMakeCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider implementation="cmake.format.CMakeLanguageCodeStyleSettingsProvider"/>
+
+    <codeInsight.lineMarkerProvider implementationClass="cmake.global.CMakeLineProvider"/>
   </extensions>
 
   <application-components>
