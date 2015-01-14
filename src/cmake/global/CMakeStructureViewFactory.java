@@ -1,9 +1,6 @@
 package cmake.global;
 
-import cmake.psi.CMakeBlock;
-import cmake.psi.CMakeCommandInvocation;
-import cmake.psi.CMakeFileElement;
-import cmake.psi.CMakeLoop;
+import cmake.psi.*;
 import com.intellij.ide.structureView.*;
 import com.intellij.ide.util.treeView.smartTree.TreeElement;
 import com.intellij.lang.PsiStructureViewFactory;
@@ -14,6 +11,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.ui.RowIcon;
+import com.intellij.util.PairProcessor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,7 +36,7 @@ public class CMakeStructureViewFactory implements PsiStructureViewFactory {
 
             @Override
             public boolean isRootNodeShown() {
-                return false;
+                return true;
             }
         };
     }
@@ -75,7 +73,12 @@ public class CMakeStructureViewFactory implements PsiStructureViewFactory {
         @Nullable
         @Override
         public String getPresentableText() {
-            return "CMake Element";
+            if(myElement instanceof CMakeCompoundExpr)
+                return myElement.getFirstChild().getText();
+            else if(myElement instanceof CMakeFile)
+                return myElement.getContainingFile().getName();
+            else
+                return null;
         }
 
         @Nullable
@@ -87,7 +90,12 @@ public class CMakeStructureViewFactory implements PsiStructureViewFactory {
         @Nullable
         @Override
         public Icon getIcon(boolean b) {
-            return CMakeIcons.FILE;
+            if(myElement instanceof CMakeFile)
+                return CMakeIcons.FILE;
+            else if(myElement instanceof CMakeCompoundExpr)
+                return CMakeIcons.FUN;
+            else
+                return null;
         }
 
         @Nullable
@@ -118,31 +126,31 @@ public class CMakeStructureViewFactory implements PsiStructureViewFactory {
         @NotNull
         @Override
         public ItemPresentation getPresentation() {
-            return myElement instanceof NavigationItem ?
-                    ((NavigationItem) myElement).getPresentation() : null;
+            return this;
+            //return myElement instanceof NavigationItem ?
+            //        ((NavigationItem) myElement).getPresentation() : this;
         }
 
         @NotNull
         @Override
         public TreeElement[] getChildren() {
             if (myElement instanceof CMakeFile) {
+                final List<TreeElement> treeElements = new ArrayList<TreeElement>();
                 CMakeFileElement[] elements = PsiTreeUtil.getChildrenOfType(myElement, CMakeFileElement.class);
-                List<TreeElement> treeElements = new ArrayList<TreeElement>(elements.length);
-                for ( CMakeFileElement f : elements ) {
-                    treeElements.add(new CMakeViewElement(f));
+                for( CMakeFileElement e : elements )
+                {
+                    if(e.getFirstChild() instanceof CMakeComposite
+                            && null != ((CMakeComposite) e.getFirstChild()).getBlock())
+                    {
+                        treeElements.add(new CMakeViewElement(((CMakeComposite) e.getFirstChild()).getBlock().getCompoundExpr()));
+                        
+                    }
                 }
+
                 return treeElements.toArray(new TreeElement[treeElements.size()]);
             } else {
                 return EMPTY_ARRAY;
             }
         }
-    }
-    
-    @NotNull
-    private static Icon createRowIcon(Icon first, Icon second) {
-        RowIcon rowIcon = new RowIcon(2);
-        rowIcon.setIcon(first, 0);
-        rowIcon.setIcon(second, 1);
-        return rowIcon;
     }
 }

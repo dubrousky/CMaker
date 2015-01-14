@@ -1,6 +1,5 @@
 package cmake.global;
 
-import cmake.psi.CMakeBbegin;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.ParserDefinition;

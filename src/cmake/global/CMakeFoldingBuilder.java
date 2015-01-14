@@ -61,13 +61,9 @@ public class CMakeFoldingBuilder extends FoldingBuilderEx implements DumbAware {
         //if (cmake.psi instanceof ErlangFunction) return ErlangPsiImplUtil.createFunctionPresentation((ErlangFunction) cmake.psi) + " -> ...";
         IElementType type = node.getElementType();
         if (CMakeTypes.BRACKET_COMMENT == type) return "[[ ... ]]";
-        if (CMakeTypes.BLOCK == type)
+        if (CMakeTypes.BLOCK == type||CMakeTypes.LOOP == type)
         {
-            return node.findChildByType(CMakeTypes.COMPOUND_EXPR).findChildByType(CMakeTypes.BBEGIN).getText()+" ...";
-        }
-        if (CMakeTypes.LOOP == type)
-        {
-            return node.findChildByType(CMakeTypes.COMPOUND_EXPR).findChildByType(CMakeTypes.LBEGIN).getText()+" ...";
+            return node.findChildByType(CMakeTypes.COMPOUND_EXPR).getFirstChildNode().getText() + " ...";
         }
         if (CMakeTypes.PREDICATE_EXPR == type)
         {
