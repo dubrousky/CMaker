@@ -45,22 +45,22 @@
     <spellchecker.bundledDictionaryProvider implementation="cmake.global.CMakeBundledDictionaryProvider"/>
     <colorSettingsPage implementation="cmake.global.CMakeColorsPage"/>
     <lang.findUsagesProvider language="CMake" implementationClass="cmake.global.CMakeFindUsagesProvider"/>
-    <lang.namesValidator language="CMake" implementationClass="cmake.global.CMakeNamesValidator"/>
-    <lang.foldingBuilder language="CMake" implementationClass="cmake.global.CMakeFoldingBuilder"/>
-    <lang.formatter language="CMake" implementationClass="cmake.format.CMakeFormattingModuleBuilder"/>
-    <lang.commenter language="CMake" implementationClass="cmake.global.CMakeCommenter"/>
-    <annotator language="CMake" implementationClass="cmake.global.CMakeAnnotator"/>
+    <lang.namesValidator     language="CMake" implementationClass="cmake.global.CMakeNamesValidator"/>
+    <lang.foldingBuilder     language="CMake" implementationClass="cmake.global.CMakeFoldingBuilder"/>
+    <lang.formatter          language="CMake" implementationClass="cmake.format.CMakeFormattingModuleBuilder"/>
+    <lang.commenter          language="CMake" implementationClass="cmake.global.CMakeCommenter"/>
+    <annotator               language="CMake" implementationClass="cmake.global.CMakeAnnotator"/>
     <!-- Icons for various file types-->
     <iconProvider implementation="cmake.global.CMakeIconProvider"/>
     <lang.psiStructureViewFactory language="CMake" implementationClass="cmake.global.CMakeStructureViewFactory"/>
-    <completion.contributor language="CMake" implementationClass="cmake.global.CMakeCompletionContributor"/>
+    <completion.contributor       language="CMake" implementationClass="cmake.global.CMakeCompletionContributor"/>
     <!-- Sdk -->
     <sdkType implementation="cmake.sdk.CMakeSdkType"/>
     <!-- Code style -->
-    <codeStyleSettingsProvider implementation="cmake.format.CMakeCodeStyleSettingsProvider"/>
+    <codeStyleSettingsProvider     implementation="cmake.format.CMakeCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider implementation="cmake.format.CMakeLanguageCodeStyleSettingsProvider"/>
 
-    <codeInsight.lineMarkerProvider implementationClass="cmake.global.CMakeLineProvider"/>
+    <codeInsight.lineMarkerProvider language="CMake" implementationClass="cmake.global.CMakeLineProvider"/>
   </extensions>
 
   <application-components>
