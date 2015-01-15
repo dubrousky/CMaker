@@ -29,14 +29,19 @@ public class CMakeProjectTemplatesFactory extends ProjectTemplatesFactory {
     @NotNull
     @Override
     public ProjectTemplate[] createTemplates(String s, WizardContext wizardContext) {
-        return new ProjectTemplate[0];
+        return new ProjectTemplate[]{
+            new CMakeTemplate("Application","",new CMakeModuleBuilder())
+            
+        };
     }
 
     static class CMakeTemplate extends BuilderBasedTemplate {
         String name;
         String description;
-        public CMakeTemplate(@NotNull String name, @NotNull String description,ModuleBuilder builder) {
+        public CMakeTemplate(@NotNull String name, @NotNull String description, ModuleBuilder builder) {
             super(builder);
+            this.name = name;
+            this.description = description;
         }
         
         @Override
