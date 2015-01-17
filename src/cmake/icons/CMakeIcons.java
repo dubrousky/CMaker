@@ -1,4 +1,4 @@
-package cmake.global;
+package cmake.icons;
 
 import com.intellij.openapi.util.IconLoader;
 
@@ -11,4 +11,5 @@ public class CMakeIcons {
     public static final Icon FILE = IconLoader.getIcon("/icons/cmake.png");
     public static final Icon MACRO = IconLoader.getIcon("/icons/hashtag.jpg");
     public static final Icon FUN = IconLoader.getIcon("/icons/fun.jpg");
+    public static final Icon LOOP = IconLoader.getIcon("/icons/loop.jpeg");
 }

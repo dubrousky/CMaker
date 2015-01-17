@@ -1,5 +1,6 @@
 package cmake.global;
 
+import cmake.filetypes.CMakeFile;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilderEx;
 import com.intellij.lang.folding.FoldingDescriptor;

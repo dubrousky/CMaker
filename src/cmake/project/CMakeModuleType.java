@@ -1,7 +1,7 @@
 package cmake.project;
 
 
-import cmake.global.CMakeIcons;
+import cmake.icons.CMakeIcons;
 import com.intellij.ide.util.projectWizard.ModuleBuilder;
 import com.intellij.openapi.module.ModuleType;
 import org.jetbrains.annotations.NotNull;
@@ -12,9 +12,13 @@ import javax.swing.*;
  * Created by alex on 1/16/15.
  */
 public class CMakeModuleType extends ModuleType {
-
-    protected CMakeModuleType(@NotNull String id) {
-        super(id);
+    public static final CMakeModuleType
+             LIBRARY = new CMakeModuleType();
+    public static final CMakeModuleType
+            APPLICATION = new CMakeModuleType();
+    
+    protected CMakeModuleType( ) {
+        super("CMAKE");
     }
 
     @NotNull

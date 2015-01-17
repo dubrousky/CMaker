@@ -1,5 +1,6 @@
-package cmake.global;
+package cmake.icons;
 
+import cmake.filetypes.CMakeFile;
 import com.intellij.ide.IconProvider;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.psi.PsiElement;
@@ -16,7 +17,7 @@ public class CMakeIconProvider extends IconProvider implements DumbAware {
     @Nullable
     @Override
     public Icon getIcon(PsiElement psiElement, int i) {
-        if( psiElement instanceof CMakeFile )
+        if( psiElement instanceof CMakeFile)
             return CMakeIcons.FILE;
         return null;
     }

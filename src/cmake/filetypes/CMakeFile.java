@@ -1,5 +1,6 @@
-package cmake.global;
+package cmake.filetypes;
 
+import cmake.global.CMakeLanguage;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
@@ -8,9 +9,13 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 
 /**
- * Created by alex on 1/1/15.
+ * CMake language file type used as root of the 
+ * cmake psi file elements holder.
  */
 public class CMakeFile extends PsiFileBase{
+    public static CMakeFile create(@NotNull FileViewProvider viewProvider) {
+        return new CMakeFile(viewProvider);
+    }
     protected CMakeFile(@NotNull FileViewProvider viewProvider) {
         super(viewProvider, CMakeLanguage.INSTANCE);
     }

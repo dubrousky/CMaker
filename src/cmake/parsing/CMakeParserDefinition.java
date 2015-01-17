@@ -1,5 +1,7 @@
-package cmake.global;
+package cmake.parsing;
 
+import cmake.filetypes.CMakeFile;
+import cmake.global.CMakeLanguage;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.ParserDefinition;
@@ -10,14 +12,10 @@ import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
-import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
-import org.intellij.plugins.relaxNG.compact.RncTokenTypes;
 import org.jetbrains.annotations.NotNull;
 import cmake.psi.CMakeTypes;
-import cmake.parsing.CMakeLexer;
-import cmake.parsing.CMakeParser;
 
 /**
  * Created by alex on 12/21/14.
@@ -31,7 +29,7 @@ public class CMakeParserDefinition implements ParserDefinition {
     @NotNull
     @Override
     public Lexer createLexer(Project project) {
-        return new CMakeLexer();
+        return new CMakeLexerAdapter();
     }
 
     @Override
@@ -67,7 +65,7 @@ public class CMakeParserDefinition implements ParserDefinition {
 
     @Override
     public PsiFile createFile(FileViewProvider fileViewProvider) {
-        return new CMakeFile(fileViewProvider);
+        return CMakeFile.create(fileViewProvider);
     }
 
     @Override

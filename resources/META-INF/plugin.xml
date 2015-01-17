@@ -25,42 +25,52 @@
   -->
 
   <extensions defaultExtensionNs="com.intellij">
+    <!-- Types -->
+    <!-- Sdk -->
+    <sdkType implementation="cmake.sdk.CMakeSdkType"/>
+    <!-- Module -->
+    <!--moduleType implementationClass="cmake.project.CMakeModuleType"/-->
+    <!-- Project -->
+    <!--projectTemplatesFactory implementation="cmake.project.CMakeProjectTemplatesFactory"/-->
+    <!-- File -->
+    <fileTypeFactory implementation="cmake.filetypes.CMakeFileTypeFactory"/>
+    
     <!-- Templates -->
     <internalFileTemplate name="Executable"/>
     <internalFileTemplate name="Static Library"/>
     <internalFileTemplate name="Dynamic Library"/>
     <!-- Add your extensions here -->
-    <fileTypeFactory implementation="cmake.global.CMakeFileTypeFactory"/>
+
     <!-- Register parser definition -->
     <lang.parserDefinition language="CMake"
-                           implementationClass="cmake.global.CMakeParserDefinition"/>
+                           implementationClass="cmake.parsing.CMakeParserDefinition"/>
     <!-- Registers the highlighter -->
     <lang.syntaxHighlighterFactory key="CMake"
-                                   implementationClass="cmake.global.CMakeHighlighterFactory"/>
+                                   implementationClass="cmake.highlights.CMakeHighlighterFactory"/>
     <lang.braceMatcher language="CMake"
                        implementationClass="cmake.global.CMakeBraceMatcher"/>
     <quoteHandler fileType="CMake" className="cmake.global.CMakeBCommentHandler"/>
     <quoteHandler fileType="CMake" className="cmake.global.CMakeQuoteHandler"/>
     <!-- Disable spellchecking of the keywords -->
-    <spellchecker.bundledDictionaryProvider implementation="cmake.global.CMakeBundledDictionaryProvider"/>
-    <colorSettingsPage implementation="cmake.global.CMakeColorsPage"/>
+    <spellchecker.bundledDictionaryProvider implementation="cmake.highlights.CMakeBundledDictionaryProvider"/>
+    <colorSettingsPage implementation="cmake.highlights.settings.CMakeColorsPage"/>
     <lang.findUsagesProvider language="CMake" implementationClass="cmake.global.CMakeFindUsagesProvider"/>
     <lang.namesValidator     language="CMake" implementationClass="cmake.global.CMakeNamesValidator"/>
     <lang.foldingBuilder     language="CMake" implementationClass="cmake.global.CMakeFoldingBuilder"/>
     <lang.formatter          language="CMake" implementationClass="cmake.format.CMakeFormattingModuleBuilder"/>
     <lang.commenter          language="CMake" implementationClass="cmake.global.CMakeCommenter"/>
-    <annotator               language="CMake" implementationClass="cmake.global.CMakeAnnotator"/>
+    <annotator               language="CMake" implementationClass="cmake.highlights.CMakeAnnotator"/>
     <!-- Icons for various file types-->
-    <iconProvider implementation="cmake.global.CMakeIconProvider"/>
+    <iconProvider implementation="cmake.icons.CMakeIconProvider"/>
     <lang.psiStructureViewFactory language="CMake" implementationClass="cmake.global.CMakeStructureViewFactory"/>
     <completion.contributor       language="CMake" implementationClass="cmake.global.CMakeCompletionContributor"/>
-    <!-- Sdk -->
-    <sdkType implementation="cmake.sdk.CMakeSdkType"/>
+    
     <!-- Code style -->
     <codeStyleSettingsProvider     implementation="cmake.format.CMakeCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider implementation="cmake.format.CMakeLanguageCodeStyleSettingsProvider"/>
 
     <codeInsight.lineMarkerProvider language="CMake" implementationClass="cmake.global.CMakeLineProvider"/>
+    <psi.referenceContributor language="CMake" implementation="cmake.reference.CMakeReferenceContributor"/>
   </extensions>
 
   <application-components>

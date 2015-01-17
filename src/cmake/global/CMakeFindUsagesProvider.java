@@ -1,5 +1,6 @@
 package cmake.global;
 
+import cmake.psi.CMakeCommandName;
 import com.intellij.lang.HelpID;
 import com.intellij.lang.cacheBuilder.WordOccurrence;
 import com.intellij.lang.cacheBuilder.WordsScanner;
@@ -15,7 +16,7 @@ import com.intellij.util.Processor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import cmake.psi.CMakeTypes;
-import cmake.parsing.CMakeLexer;
+import cmake.parsing.CMakeLexerAdapter;
 
 /**
  * Created by alex on 12/30/14.
@@ -27,12 +28,13 @@ public class CMakeFindUsagesProvider implements FindUsagesProvider {
         return new WordsScanner() {
             @Override
             public void processWords(CharSequence charSequence, Processor<WordOccurrence> processor) {
-                CMakeLexer lexer = new CMakeLexer();
+                CMakeLexerAdapter lexer = new CMakeLexerAdapter();
                 lexer.start(charSequence);
                 IElementType tokenType;
                 while ((tokenType = lexer.getTokenType()) != null) {
                     //TODO process occurrences in string literals and comments
-                    if (tokenType == CMakeTypes.VAR_REF) {
+                    if (tokenType == CMakeTypes.VAR_REF 
+                            || tokenType == CMakeTypes.IDENTIFIER) {
                         int tokenStart = lexer.getTokenStart();
                         for (TextRange wordRange : StringUtil.getWordIndicesIn(lexer.getTokenText())) {
                             int start = tokenStart + wordRange.getStartOffset();
@@ -48,7 +50,7 @@ public class CMakeFindUsagesProvider implements FindUsagesProvider {
 
     @Override
     public boolean canFindUsagesFor(PsiElement psiElement) {
-        return false;
+        return psiElement instanceof CMakeCommandName;
     }
 
     @Nullable

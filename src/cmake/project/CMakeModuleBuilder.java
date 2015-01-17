@@ -16,6 +16,6 @@ public class CMakeModuleBuilder extends ModuleBuilder {
 
     @Override
     public ModuleType getModuleType() {
-        return null;
+        return CMakeModuleType.APPLICATION;
     }
 }

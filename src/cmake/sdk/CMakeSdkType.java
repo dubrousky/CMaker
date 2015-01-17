@@ -1,6 +1,6 @@
 package cmake.sdk;
 
-import cmake.global.CMakeIcons;
+import cmake.icons.CMakeIcons;
 import com.intellij.openapi.projectRoots.*;
 import com.intellij.openapi.util.SystemInfo;
 import org.jdom.Element;
@@ -11,7 +11,7 @@ import javax.swing.*;
 import java.io.File;
 
 /**
- * Created by alex on 1/12/15.
+ * Defines the sdk for cmake (location of cmake executables and libraries)
  */
 public class CMakeSdkType extends SdkType {
     public static final String CMAKE_SDK_TYPE_ID = "CMakeSdk";
@@ -41,15 +41,25 @@ public class CMakeSdkType extends SdkType {
         else if (SystemInfo.isLinux) {
             return "/usr/bin/cmake";
         }
-
         return null;
     }
 
+    /**
+     * Validate sdk home. Check if cmake binary can be executed. 
+     * @param s
+     * @return
+     */
     @Override
     public boolean isValidSdkHome(String s) {
-        return false;
+        return true;
     }
 
+    /**
+     *
+     * @param s
+     * @param s1
+     * @return
+     */
     @Override
     public String suggestSdkName(String s, String s1) {
         return null;
@@ -58,17 +68,18 @@ public class CMakeSdkType extends SdkType {
     @Nullable
     @Override
     public AdditionalDataConfigurable createAdditionalDataConfigurable(SdkModel sdkModel, SdkModificator sdkModificator) {
+        // TODO: WTF?
         return null;
     }
 
     @Override
     public String getPresentableName() {
-        return "CMake Installation";
+        return "CMake";
     }
 
     @Override
     public void saveAdditionalData(SdkAdditionalData sdkAdditionalData, Element element) {
-
+        // TODO: save sdk data in the project
     }
 
     @NotNull

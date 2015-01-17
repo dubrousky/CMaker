@@ -1,6 +1,6 @@
 package cmake.project;
 
-import cmake.global.CMakeIcons;
+import cmake.icons.CMakeIcons;
 import com.intellij.ide.util.projectWizard.ModuleBuilder;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.platform.ProjectTemplate;
@@ -19,7 +19,8 @@ public class CMakeProjectTemplatesFactory extends ProjectTemplatesFactory {
     public String[] getGroups() {
         return new String[] {
                 "Executable",
-                "Library"};
+                "Static Library",
+                "Dynamic Library"};
     }
 
     @Override

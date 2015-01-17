@@ -1,5 +1,7 @@
-package cmake.global;
+package cmake.filetypes;
 
+import cmake.icons.CMakeIcons;
+import cmake.global.CMakeLanguage;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.vfs.CharsetToolkit;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -11,7 +13,8 @@ import javax.swing.*;
 import java.nio.charset.Charset;
 
 /**
- * Created by alex on 12/21/14.
+ * Defines the association between the file type, extension
+ * and language. Registered by the CMakeFileTypeFactory.
  */
 public class CMakeFileType extends LanguageFileType {
     public static final CMakeFileType INSTANCE = new CMakeFileType();

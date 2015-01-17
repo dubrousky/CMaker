@@ -2,10 +2,7 @@ package cmake.format;
 
 import cmake.global.CMakeLanguage;
 import cmake.psi.CMakeTypes;
-import com.intellij.formatting.FormattingModel;
-import com.intellij.formatting.FormattingModelBuilder;
-import com.intellij.formatting.FormattingModelProvider;
-import com.intellij.formatting.SpacingBuilder;
+import com.intellij.formatting.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -25,14 +22,11 @@ public class CMakeFormattingModuleBuilder implements FormattingModelBuilder {
 
         CMakeCodeStyleSettings cmakeSettings = settings.getCustomSettings(CMakeCodeStyleSettings.class);
         SpacingBuilder spacingBuilder = createSpacingBuilder(settings, cmakeSettings);
-        CMakeFormattingBlock block = new CMakeFormattingBlock(element.getNode(), 
-                                                                null,
-                                                                null,
-                                                                null,
-                                                                settings,
-                                                                cmakeSettings,
-                                                                spacingBuilder,
-                                                                -1);
+        CMakeFormattingBlock block = new CMakeFormattingBlock(element.getNode(),
+                                                                Alignment.createAlignment(),
+                                                                Wrap.createWrap(WrapType.NONE,true),
+                                                                spacingBuilder
+                                                                );
         return FormattingModelProvider.createFormattingModelForPsiFile(element.getContainingFile(), block, settings);
     }
 
@@ -41,11 +35,14 @@ public class CMakeFormattingModuleBuilder implements FormattingModelBuilder {
         
         //noinspection SuspiciousNameCombination
         return new SpacingBuilder(settings, CMakeLanguage.INSTANCE)
+                .after(CMakeTypes.COMPOUND_EXPR).lineBreakInCodeIf(true)
                 .after(CMakeTypes.ARGUMENT).spaceIf(true)
                 .after(CMakeTypes.PREDICATE_EXPR).lineBreakInCodeIf(true)
                 .after(CMakeTypes.COMMAND_EXPR).lineBreakInCodeIf(true)
                 .after(CMakeTypes.COMMAND_NAME).spaceIf(true)
                 .after(CMakeTypes.IDENTIFIER).spaceIf(true)
+                .after(CMakeTypes.LPAR).spaceIf(true)
+                .before(CMakeTypes.RPAR).spaceIf(true)
                 .around(CMakeTypes.SEP).spaceIf(true)
                 ;
         

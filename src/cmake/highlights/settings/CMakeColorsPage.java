@@ -1,6 +1,8 @@
-package cmake.global;
+package cmake.highlights.settings;
 
 
+import cmake.highlights.CMakeHighlighter;
+import cmake.icons.CMakeIcons;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
 import com.intellij.openapi.options.colors.AttributesDescriptor;
@@ -14,9 +16,11 @@ import java.util.Map;
 
 
 /**
- * Created by alex on 12/27/14.
+ * Configures highlighting colors. Should be registered
+ * at plugin.xml.
  */
 public class CMakeColorsPage implements ColorSettingsPage {
+    // Table of
     private static final AttributesDescriptor[] ATTRS;
 
     static {

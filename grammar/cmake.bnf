@@ -1,6 +1,7 @@
 {
   parserClass="cmake.parsing.CMakeParser"
   parserUtilClass="cmake.parsing.CMakeParserUtil"
+  psiImplUtilClass="cmake.parsing.CMakeParserUtilImpl"
  
   extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
  
@@ -44,19 +45,27 @@
     quoted_argument='regexp:(")([^"]\\\n|[^"])*(")'
     identifier='regexp:[A-Za-z_][A-Za-z0-9_-]*'
   ]
+  
+
+    mixin("command_name")="cmake.psi.impl.CMakeNamedElementImpl"
+    implements("command_name")="cmake.psi.CMakeNamedElement"
+    methods("command_name")=[getNameIdentifier getName setName]
+
  }
 
 // TODO: Optimise grammar to have less depth
 
- file         ::=  file_element* <<eof>>
- file_element ::= !<<eof>> composite          |
-                  !<<eof>> command_invocation |
+ file         ::= file_element* <<eof>> { pin=1 }
+ file_element ::= block                       |
+                  loop                        |
+                  cond                        |
+                  cmd                         |
                   line_comment                |
                   bracket_comment
  private line_ending  ::=  ( line_comment | bracket_comment )? 
  
- meta compound_expr  ::= <<begin>> (command_invocation|cond|loop)* <<end>> { pin=1 }
- meta predicate_expr ::= <<pred>> (command_invocation|cond|loop)*
+ meta compound_expr  ::= <<begin>> (cmd|cond|loop)* <<end>> { pin=1 }
+ meta predicate_expr ::= <<pred>> (cmd|cond|loop)*
  meta command_expr   ::= <<cmd>> '(' arguments ')' { pin=2 }
  meta seq            ::= <<e>> (<<sep>>? <<e>>)*
  
@@ -66,15 +75,16 @@
  fend   ::= <<command_expr (endfunction)>>
  mbegin ::= <<command_expr (macro)>>
  mend   ::= <<command_expr (endmacro)>>
- // Loops and conditions can nest 
- 
+
+ // Loops and conditions can nest
  // Loop block
  loop   ::= <<compound_expr lbegin lend>>
  lbegin ::= <<command_expr ( foreach | while )>>
  lend   ::= <<command_expr ( endforeach | endwhile )>>
+ 
  // Condition block
  cond             ::= if_expr 
-                        (command_invocation|cond|loop)*
+                        (cmd|cond|loop)+
                         <<predicate_expr (elseif_expr)>>*
                         <<predicate_expr (else_expr)>>*
                       endif_expr { pin=1 }
@@ -82,21 +92,20 @@
  elseif_expr      ::= <<command_expr (elseif)>>
  else_expr        ::= <<command_expr (else)>>
  endif_expr       ::= <<command_expr (endif)>>
- 
- composite ::= loop | block | cond
+
  
  // Single command invocation
- command_invocation  ::=  <<command_expr command_name>>
- command_name        ::=  identifier
+ cmd                 ::=  <<command_expr command_name>>
+ command_name        ::=  identifier 
  
  arguments           ::=  argument? bracket_comment*  separated_argument*
  separated_argument  ::=  ( sep? argument | '(' arguments ')')
 
 
- argument            ::=    bracket_argument |
-                            quoted_argument  |
-                            unquoted_argument|
-                            var_ref
+argument            ::=   bracket_argument |
+                          quoted_argument  |
+                          unquoted_argument|
+                          var_ref
                             
  unquoted_argument   ::=  identifier
  

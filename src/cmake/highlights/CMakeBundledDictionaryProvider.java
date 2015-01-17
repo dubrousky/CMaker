@@ -1,7 +1,7 @@
-package cmake.global;
+package cmake.highlights;
 
 /**
- * Created by alex on 12/27/14.
+ * Avoid keywords highlights
  */
 import com.intellij.spellchecker.BundledDictionaryProvider;
 

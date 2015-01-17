@@ -1,4 +1,4 @@
-package cmake.global;
+package cmake.highlights;
 
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.lexer.Lexer;
@@ -11,12 +11,13 @@ import com.intellij.psi.tree.IElementType;
 import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
 import cmake.psi.CMakeTypes;
-import cmake.parsing.CMakeLexer;
+import cmake.parsing.CMakeLexerAdapter;
 
 import java.util.Map;
 
 /**
- * Created by alex on 12/21/14.
+ * This is a simple highlighter based on the lexer output.
+ * Annotator provides  the psi-aware highlights.
  */
 public class CMakeHighlighter extends SyntaxHighlighterBase {
     private static final Map<IElementType, TextAttributesKey> keys1;
@@ -24,12 +25,12 @@ public class CMakeHighlighter extends SyntaxHighlighterBase {
     @NotNull
     @Override
     public Lexer getHighlightingLexer() {
-        return new CMakeLexer();
+        return new CMakeLexerAdapter();
     }
 
     // TODO: Add text highlighting attributes
     // TODO: Add mapping between token and its highlighting properties
-
+    // Highlighting styles
     public static final TextAttributesKey KEYWORD = TextAttributesKey.createTextAttributesKey(
         "Keyword",
         DefaultLanguageHighlighterColors.KEYWORD

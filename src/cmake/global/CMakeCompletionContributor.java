@@ -13,8 +13,28 @@ import org.jetbrains.annotations.NotNull;
  */
 public class CMakeCompletionContributor extends CompletionContributor {
     public CMakeCompletionContributor() {
+        extend(CompletionType.SMART,
+                PlatformPatterns.psiElement(CMakeTypes.ELSE).withLanguage(CMakeLanguage.INSTANCE),
+                new CompletionProvider<CompletionParameters>() {
+                    public void addCompletions(@NotNull CompletionParameters parameters,
+                                               ProcessingContext context,
+                                               @NotNull CompletionResultSet resultSet) {
+                        resultSet.addElement(LookupElementBuilder.create("Hello"));
+                    }
+                }
+        );
+        extend(CompletionType.SMART,
+                PlatformPatterns.psiElement(CMakeTypes.IDENTIFIER).withLanguage(CMakeLanguage.INSTANCE),
+                new CompletionProvider<CompletionParameters>() {
+                    public void addCompletions(@NotNull CompletionParameters parameters,
+                                               ProcessingContext context,
+                                               @NotNull CompletionResultSet resultSet) {
+                        resultSet.addElement(LookupElementBuilder.create("()"));
+                    }
+                }
+        );
         extend(CompletionType.BASIC,
-                PlatformPatterns.psiElement(CMakeTypes.ARGUMENTS).withLanguage(CMakeLanguage.INSTANCE),
+                PlatformPatterns.psiElement(CMakeTypes.QUOTED_ARGUMENT).withLanguage(CMakeLanguage.INSTANCE),
                 new CompletionProvider<CompletionParameters>() {
                     public void addCompletions(@NotNull CompletionParameters parameters,
                                                ProcessingContext context,

@@ -1,10 +1,11 @@
-package cmake.global;
+package cmake.filetypes;
 
 import com.intellij.openapi.fileTypes.FileTypeConsumer;
 import com.intellij.openapi.fileTypes.FileTypeFactory;
 
 /**
- * Created by alex on 12/21/14.
+ * Registers the mapping between the extension and
+ * and cmake file extension.
  */
 public class CMakeFileTypeFactory extends FileTypeFactory {
 
