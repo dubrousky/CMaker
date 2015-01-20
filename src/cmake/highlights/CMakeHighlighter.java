@@ -106,4 +106,12 @@ public class CMakeHighlighter extends SyntaxHighlighterBase {
     //TODO: Fill the map to use it in the ColorsPage
     public static final Map<TextAttributesKey, Pair<String, HighlightSeverity>> DISPLAY_NAMES = new THashMap<TextAttributesKey, Pair<String, HighlightSeverity>>(6);
 
+    static {
+        DISPLAY_NAMES.put(KEYWORD, new Pair<String, HighlightSeverity>("Keyword",null));
+        DISPLAY_NAMES.put(BRACES, new Pair<String, HighlightSeverity>("Braces", null));
+        DISPLAY_NAMES.put(STRING, new Pair<String, HighlightSeverity>("String", null));
+        DISPLAY_NAMES.put(COMMENT, new Pair<String, HighlightSeverity>("Comment", null));
+        DISPLAY_NAMES.put(IDENTIFIER, new Pair<String, HighlightSeverity>("Identifier", null));
+        DISPLAY_NAMES.put(BADCHAR, Pair.create("Bad Character", HighlightSeverity.WARNING));
+    }
 }

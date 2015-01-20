@@ -23,8 +23,7 @@ import java.util.List;
  */
 public class CMakeFormattingBlock extends AbstractBlock {
     public static final TokenSet BLOCKS_TOKEN_SET = TokenSet.create(
-            CMakeTypes.COMPOUND_EXPR,
-            CMakeTypes.PREDICATE_EXPR
+            CMakeTypes.BODY
     );
     private final Indent myIndent;
     private final SpacingBuilder mySpacingBuilder;
@@ -99,6 +98,9 @@ public class CMakeFormattingBlock extends AbstractBlock {
         if (parentType == CMakeTypes.ARGUMENTS && nodePsi instanceof CMakeArgument) {
             return WrappingUtil.getWrapType(CommonCodeStyleSettings.WRAP_AS_NEEDED);
         }
+        else if (parentType == CMakeTypes.COMPOUND_EXPR && nodePsi instanceof CMakeCommandExpr) {
+            return WrappingUtil.getWrapType(CommonCodeStyleSettings.WRAP_AS_NEEDED);
+        }
         return null;
     }
 
@@ -124,7 +126,8 @@ public class CMakeFormattingBlock extends AbstractBlock {
     @NotNull
     @Override
     public ChildAttributes getChildAttributes(int newChildIndex) {
-        return new ChildAttributes(myIndent, null);
+
+        return new ChildAttributes(myIndent, Alignment.createAlignment());
     }
 
     @Override
@@ -134,7 +137,6 @@ public class CMakeFormattingBlock extends AbstractBlock {
 
     @Override
     public boolean isLeaf() {
-        return myNode.getFirstChildNode() == null
-                || myNode.getPsi() instanceof CMakeCommandExpr;
+        return myNode.getFirstChildNode() == null;
     }
 }

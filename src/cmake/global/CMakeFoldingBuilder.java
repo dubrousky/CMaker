@@ -6,6 +6,7 @@ import com.intellij.lang.folding.FoldingBuilderEx;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.DumbAware;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.PsiElementProcessor;
 import com.intellij.psi.tree.IElementType;
@@ -39,14 +40,24 @@ public class CMakeFoldingBuilder extends FoldingBuilderEx implements DumbAware {
                 @Override
                 public boolean execute(@NotNull PsiElement element) {
                     if (TokenSet.create(CMakeTypes.LINE_COMMENT,
-                                        CMakeTypes.BRACKET_COMMENT,
-                                        CMakeTypes.BLOCK,
-                                        CMakeTypes.LOOP,
-                                        CMakeTypes.PREDICATE_EXPR,
-                                        CMakeTypes.COND
+                            CMakeTypes.BRACKET_COMMENT,
+                            CMakeTypes.COMPOUND_EXPR,
+                            CMakeTypes.PREDICATE_EXPR
                     ).contains(element.getNode().getElementType()) && element.getTextRange().getLength() > 2) {
                         result.add(new FoldingDescriptor(element, element.getTextRange()));
                     }
+                    /*else if(element.getNode().getElementType() == CMakeTypes.ENDIF_EXPR)
+                    {
+                        // find previous expr and fold it together with endif
+                        PsiElement prev = element.getPrevSibling();
+                        while(prev.getNode().getElementType() != CMakeTypes.PREDICATE_EXPR)
+                        {
+                            prev = prev.getPrevSibling();
+                        }
+                        TextRange r = new TextRange(prev.getTextOffset(),
+                                element.getTextOffset()+element.getTextLength());
+                        result.add(new FoldingDescriptor(prev,r));
+                    }*/
                     return true;
                 }
             });
@@ -62,9 +73,9 @@ public class CMakeFoldingBuilder extends FoldingBuilderEx implements DumbAware {
         //if (cmake.psi instanceof ErlangFunction) return ErlangPsiImplUtil.createFunctionPresentation((ErlangFunction) cmake.psi) + " -> ...";
         IElementType type = node.getElementType();
         if (CMakeTypes.BRACKET_COMMENT == type) return "[[ ... ]]";
-        if (CMakeTypes.BLOCK == type||CMakeTypes.LOOP == type)
+        if (CMakeTypes.COMPOUND_EXPR  == type)
         {
-            return node.findChildByType(CMakeTypes.COMPOUND_EXPR).getFirstChildNode().getText() + " ...";
+            return node.getFirstChildNode().getText() + " ...";
         }
         if (CMakeTypes.PREDICATE_EXPR == type)
         {

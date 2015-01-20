@@ -11,6 +11,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiManager;
+import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -71,7 +72,7 @@ public class CMakeParserUtilImpl {
         }
     }
 
-    public static ItemPresentation getPresentation(final CMakeBlock element) {
+    public static ItemPresentation getPresentation(final CMakeFunmacro element) {
         return new ItemPresentation() {
             @Nullable
             @Override
@@ -94,7 +95,7 @@ public class CMakeParserUtilImpl {
     }
 
     public static List<PsiElement> getDefinedSymbols(Project project) {
-        List<PsiElement> result = new ArrayList<PsiElement>();
+        final List<PsiElement> result = new ArrayList<PsiElement>();
         Collection<VirtualFile> virtualFiles = FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, 
                 CMakeFileType.INSTANCE,
                 GlobalSearchScope.allScope(project));
@@ -102,20 +103,26 @@ public class CMakeParserUtilImpl {
         for (VirtualFile virtualFile : virtualFiles) {
             CMakeFile cmakeFile = (CMakeFile) PsiManager.getInstance(project).findFile(virtualFile);
             if (cmakeFile != null) {
-                for( PsiElement e : cmakeFile.getChildren() ) {
-                    // Use visitor to visit nodes since the structure is deep
-                    PsiElement[] blocks = PsiTreeUtil.getChildrenOfType(e, CMakeBlock.class);
-                    if (blocks != null) {
-                        Collections.addAll(result, blocks);
+                cmakeFile.accept(new PsiRecursiveElementWalkingVisitor() {
+                    @Override
+                    public void visitElement(PsiElement element) {
+                        super.visitElement(element);
+                        if(element instanceof CMakeCommandExpr
+                                && (element.getFirstChild().toString().equalsIgnoreCase("function")
+                                || element.getFirstChild().toString().equalsIgnoreCase("macro")
+                                || element.getFirstChild().toString().equalsIgnoreCase("set")))
+                        {
+                            result.add(element);
+                        }
                     }
-                }
+                });
             }
         }
         return result;
     }
 
-    public static List<PsiElement> getDefinedSymbols(Project project, String name) {
-        List<PsiElement> result = new ArrayList<PsiElement>();
+    public static List<PsiElement> getDefinedSymbols(Project project, final String name) {
+        final List<PsiElement> result = new ArrayList<PsiElement>();
         Collection<VirtualFile> virtualFiles = FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME,
                 CMakeFileType.INSTANCE,
                 GlobalSearchScope.allScope(project));
@@ -123,35 +130,42 @@ public class CMakeParserUtilImpl {
         for (VirtualFile virtualFile : virtualFiles) {
             CMakeFile cmakeFile = (CMakeFile) PsiManager.getInstance(project).findFile(virtualFile);
             if (cmakeFile != null) {
-                for( PsiElement e : cmakeFile.getChildren() ) {
-                    // Use visitor to visit nodes since the structure is deep
-                    PsiElement[] blocks = PsiTreeUtil.getChildrenOfType(e, CMakeBlock.class);
-                    for( PsiElement b : blocks) {
-                        if (b.getFirstChild().getFirstChild().getText().matches(name)) {
-                            /*
-                            block
-                            |
-                            ---- compound_expr 
-                                 |
-                                 ---- command_expr
-                                      |
-                                      | - function
-                                      | - (
-                                      | - arguments
-                                      |   |
-                                      |   |- argument
-                                      |   |- *
-                             */
-                            Collections.addAll(result, b.getFirstChild().getFirstChild().getFirstChild());
+                cmakeFile.accept(new PsiRecursiveElementWalkingVisitor() {
+                    @Override
+                    public void visitElement(PsiElement element) {
+                        super.visitElement(element);
+                        if(element instanceof CMakeCommandExpr
+                                && (element.getFirstChild().toString().equalsIgnoreCase("function")
+                                    || element.getFirstChild().toString().equalsIgnoreCase("macro")
+                                    || element.getFirstChild().toString().equalsIgnoreCase("set"))
+                                && ((CMakeCommandExpr) element).getArguments().getArgument().toString().equalsIgnoreCase(name))
+                        {
+                            result.add(element);
                         }
                     }
-                }
+                });   
             }
         }
         return result;
     }
-    
-    public static void treeWalk(PsiElement start,PairProcessor<PsiElement,PsiElement> pairProcessor) { 
-        //TODO: implement walking the tree
+
+    public static List<PsiElement> getDefinedSymbols(PsiElement root) {
+        final List<PsiElement> result = new ArrayList<PsiElement>();
+        if(root instanceof CMakeFile){
+            root.accept(new PsiRecursiveElementWalkingVisitor() {
+                @Override
+                public void visitElement(PsiElement element) {
+                    super.visitElement(element);
+                    if(element instanceof CMakeCommandExpr
+                            && (element.getFirstChild().getNode().getElementType() == CMakeTypes.FUNCTION
+                            || element.getFirstChild().getNode().getElementType() == CMakeTypes.MACRO
+                            || element.getFirstChild().toString().equalsIgnoreCase("set")))
+                    {
+                        result.add(element);
+                    }
+                }
+            });
+        }
+        return result;
     }
 }

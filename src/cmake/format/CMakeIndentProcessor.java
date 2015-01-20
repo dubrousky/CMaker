@@ -18,21 +18,19 @@ public class CMakeIndentProcessor {
 
     public Indent getChildIndent(ASTNode node) {
         String debug = "<"+node.getText()+">";
-        if (node.getPsi().getContext() instanceof CMakeCond
-                ||node.getPsi().getContext() instanceof CMakePredicateExpr
-                ||node.getPsi().getContext() instanceof CMakeCompoundExpr
-                ) {
-            debug="---->"+debug+"\n";
-            
+        if (
+                null != node
+                && null != node.getTreeParent()
+                && node.getTreeParent().getPsi() instanceof CMakeBody
+            ) 
+        {
             System.out.print(debug);
-            return Indent.getContinuationIndent();
+            return Indent.getNormalIndent(false);
         }
-        debug+="\n";
-        //System.out.print(debug);
         return Indent.getNoneIndent();
     }
 
     private static boolean needIndent(@Nullable IElementType type) {
-        return type != null;// && CMakeFormattingBlock.BLOCKS_TOKEN_SET.contains(type);
+        return type != null && CMakeFormattingBlock.BLOCKS_TOKEN_SET.contains(type);
     }
 }

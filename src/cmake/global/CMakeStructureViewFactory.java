@@ -2,6 +2,7 @@ package cmake.global;
 
 import cmake.filetypes.CMakeFile;
 import cmake.icons.CMakeIcons;
+import cmake.parsing.CMakeParserUtilImpl;
 import cmake.psi.*;
 import com.intellij.ide.structureView.*;
 import com.intellij.ide.util.treeView.smartTree.TreeElement;
@@ -94,8 +95,21 @@ public class CMakeStructureViewFactory implements PsiStructureViewFactory {
         @Nullable
         @Override
         public String getPresentableText() {
-            if(myElement instanceof CMakeCompoundExpr)
-                return myElement.getFirstChild().getText();
+            if(myElement instanceof CMakeCommandExpr) {
+                CMakeArguments args = ((CMakeCommandExpr) myElement).getArguments();
+                StringBuilder stringBuilder = new StringBuilder();
+                if(args.getTextLength()>0) {
+                    stringBuilder.append(args.getArgument().getText())
+                            .append("(");
+                    for (PsiElement a : args.getSeparatedArgumentList()) {
+                        stringBuilder.append(" ");
+                        stringBuilder.append(a.getText());
+                    }
+                    stringBuilder.append(" ) : ")
+                            .append(myElement.getFirstChild().getText());
+                }
+                return  stringBuilder.toString();
+            }
             else if(myElement instanceof CMakeFile)
                 return myElement.getContainingFile().getName();
             else
@@ -105,7 +119,7 @@ public class CMakeStructureViewFactory implements PsiStructureViewFactory {
         @Nullable
         @Override
         public String getLocationString() {
-            return myElement.getProject().getName();
+            return null!=myElement?myElement.getContainingFile().getName():null;
         }
 
         @Nullable
@@ -113,11 +127,13 @@ public class CMakeStructureViewFactory implements PsiStructureViewFactory {
         public Icon getIcon(boolean b) {
             if(myElement instanceof CMakeFile)
                 return CMakeIcons.FILE;
-            else if(myElement instanceof CMakeCompoundExpr) {
-                if (myElement.getFirstChild().toString().matches("function"))
+            else if(myElement instanceof CMakeCommandExpr) {
+                if (myElement.getFirstChild().getNode().getElementType() == CMakeTypes.FUNCTION)
                     return CMakeIcons.FUN;
-                else
+                else if (myElement.getFirstChild().getNode().getElementType() == CMakeTypes.MACRO)
                     return CMakeIcons.MACRO;
+                else
+                    return null;
             }
             else
                 return null;
@@ -173,14 +189,18 @@ public class CMakeStructureViewFactory implements PsiStructureViewFactory {
                 //   |-block
                 //     |-compound_expr
                 //       |-fbegin <<function(arguments)>>
-                CMakeFileElement[] elements = PsiTreeUtil.getChildrenOfType(myElement, CMakeFileElement.class);
+                /*CMakeFileElement[] elements = PsiTreeUtil.getChildrenOfType(myElement, CMakeFileElement.class);
                 if(null != elements) {
                     // Scan elements for definition blocks
                     for (CMakeFileElement e : elements) {
-                        if (e.getFirstChild() instanceof CMakeBlock) {
-                            treeElements.add(new CMakeViewElement(e.getBlock().getCompoundExpr()));
+                        if (e.getFirstChild() instanceof CMakeFunmacro) {
+                            treeElements.add(new CMakeViewElement(e.getFunmacro().getCompoundExpr()));
                         }
                     }
+                }*/
+                List<PsiElement> elements = CMakeParserUtilImpl.getDefinedSymbols(myElement);
+                for (PsiElement e : elements) {
+                    treeElements.add(new CMakeViewElement(e));
                 }
                 return treeElements.toArray(new TreeElement[treeElements.size()]);
             } else {

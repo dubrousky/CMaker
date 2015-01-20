@@ -56,21 +56,21 @@
 // TODO: Optimise grammar to have less depth
 
  file         ::= file_element* <<eof>> { pin=1 }
- file_element ::= block                       |
+ file_element ::= funmacro                    |
                   loop                        |
                   cond                        |
                   cmd                         |
                   line_comment                |
                   bracket_comment
- private line_ending  ::=  ( line_comment | bracket_comment )? 
+ private line_ending  ::=  ( bracket_comment | line_comment )
  
- meta compound_expr  ::= <<begin>> (cmd|cond|loop)* <<end>> { pin=1 }
- meta predicate_expr ::= <<pred>> (cmd|cond|loop)*
+ meta compound_expr  ::= <<ebegin>> <<ebody>> <<eend>> { pin=1 }
+ meta predicate_expr ::= <<pred>> <<pbody>>
  meta command_expr   ::= <<cmd>> '(' arguments ')' { pin=2 }
  meta seq            ::= <<e>> (<<sep>>? <<e>>)*
- 
+
  // Function/macro definition need to be separated
- block  ::= <<compound_expr fbegin fend>> | <<compound_expr mbegin mend>>
+ funmacro  ::= <<compound_expr fbegin body fend>> | <<compound_expr mbegin body mend>>
  fbegin ::= <<command_expr (function)>>
  fend   ::= <<command_expr (endfunction)>>
  mbegin ::= <<command_expr (macro)>>
@@ -78,21 +78,25 @@
 
  // Loops and conditions can nest
  // Loop block
- loop   ::= <<compound_expr lbegin lend>>
- lbegin ::= <<command_expr ( foreach | while )>>
- lend   ::= <<command_expr ( endforeach | endwhile )>>
+ loop   ::= <<compound_expr forbegin body forend>> | <<compound_expr whilebegin body whileend>>
+ forbegin ::= <<command_expr ( foreach )>>
+ forend   ::= <<command_expr ( endforeach )>>
+ whilebegin ::= <<command_expr ( while )>>
+ whileend   ::= <<command_expr ( endwhile )>>
  
  // Condition block
- cond             ::= if_expr 
-                        (cmd|cond|loop)+
-                        <<predicate_expr (elseif_expr)>>*
-                        <<predicate_expr (else_expr)>>*
-                      endif_expr { pin=1 }
+ cond             ::=<<predicate_expr (if_expr) body>>
+                     <<predicate_expr (elseif_expr) body>>*
+                     <<compound_expr (elseif_expr|else_expr) body (endif_expr)>>
+                     |<<compound_expr (if_expr) body (endif_expr)>>
+
  if_expr          ::= <<command_expr (if)>>
  elseif_expr      ::= <<command_expr (elseif)>>
  else_expr        ::= <<command_expr (else)>>
  endif_expr       ::= <<command_expr (endif)>>
 
+ // Body
+ body              ::= (loop|cond|cmd|line_ending)+
  
  // Single command invocation
  cmd                 ::=  <<command_expr command_name>>
@@ -102,7 +106,7 @@
  separated_argument  ::=  ( sep? argument | '(' arguments ')')
 
 
-argument            ::=   bracket_argument |
+ argument            ::=  bracket_argument |
                           quoted_argument  |
                           unquoted_argument|
                           var_ref

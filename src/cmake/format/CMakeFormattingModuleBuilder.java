@@ -36,14 +36,14 @@ public class CMakeFormattingModuleBuilder implements FormattingModelBuilder {
         //noinspection SuspiciousNameCombination
         return new SpacingBuilder(settings, CMakeLanguage.INSTANCE)
                 .after(CMakeTypes.COMPOUND_EXPR).lineBreakInCodeIf(true)
-                .after(CMakeTypes.ARGUMENT).spaceIf(true)
-                .after(CMakeTypes.PREDICATE_EXPR).lineBreakInCodeIf(true)
                 .after(CMakeTypes.COMMAND_EXPR).lineBreakInCodeIf(true)
+                .after(CMakeTypes.PREDICATE_EXPR).lineBreakInCodeIf(true)
+                .before(CMakeTypes.SEPARATED_ARGUMENT).spaceIf(true)
                 .after(CMakeTypes.COMMAND_NAME).spaceIf(true)
                 .after(CMakeTypes.IDENTIFIER).spaceIf(true)
                 .after(CMakeTypes.LPAR).spaceIf(true)
                 .before(CMakeTypes.RPAR).spaceIf(true)
-                .around(CMakeTypes.SEP).spaceIf(true)
+                .after(CMakeTypes.SEP).spaceIf(true)
                 ;
         
     }

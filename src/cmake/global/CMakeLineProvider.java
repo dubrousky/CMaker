@@ -45,5 +45,6 @@ public class CMakeLineProvider extends RelatedItemLineMarkerProvider {
             result.add(builder.createLineMarkerInfo(element));
 
         }
+        // ADD Library/Excutable project signs
     }
 }
