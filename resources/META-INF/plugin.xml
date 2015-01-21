@@ -70,7 +70,8 @@
     <langCodeStyleSettingsProvider implementation="cmake.format.CMakeLanguageCodeStyleSettingsProvider"/>
 
     <codeInsight.lineMarkerProvider language="CMake" implementationClass="cmake.global.CMakeLineProvider"/>
-    <psi.referenceContributor language="CMake" implementation="cmake.reference.CMakeReferenceContributor"/>
+    <psi.referenceContributor implementation="cmake.reference.CMakeReferenceContributor"/>
+    <elementDescriptionProvider implementation="cmake.global.CMakeElementDescriptionProvider"/>
   </extensions>
 
   <application-components>

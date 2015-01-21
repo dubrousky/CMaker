@@ -11,6 +11,7 @@ import com.intellij.psi.ElementDescriptionUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.usageView.UsageViewLongNameLocation;
+import com.intellij.usageView.UsageViewNodeTextLocation;
 import com.intellij.usageView.UsageViewTypeLocation;
 import com.intellij.util.Processor;
 import org.jetbrains.annotations.NotNull;
@@ -40,6 +41,8 @@ public class CMakeFindUsagesProvider implements FindUsagesProvider {
                             int start = tokenStart + wordRange.getStartOffset();
                             int end = tokenStart + wordRange.getEndOffset();
                             processor.process(new WordOccurrence(charSequence, start, end, WordOccurrence.Kind.CODE));
+                            System.out.println("add->" + lexer.getTokenText() + "\n");
+                            System.out.println(charSequence);
                         }
                     }
                     lexer.advance();
@@ -50,7 +53,9 @@ public class CMakeFindUsagesProvider implements FindUsagesProvider {
 
     @Override
     public boolean canFindUsagesFor(PsiElement psiElement) {
-        return psiElement instanceof CMakeCommandName;
+        return psiElement instanceof CMakeCommandName
+                || psiElement.getNode().getElementType() == CMakeTypes.IDENTIFIER
+                || psiElement.getNode().getElementType() == CMakeTypes.VAR_REF;
     }
 
     @Nullable
@@ -74,6 +79,6 @@ public class CMakeFindUsagesProvider implements FindUsagesProvider {
     @NotNull
     @Override
     public String getNodeText(@NotNull PsiElement psiElement, boolean b) {
-        return ElementDescriptionUtil.getElementDescription(psiElement, UsageViewLongNameLocation.INSTANCE);
+        return ElementDescriptionUtil.getElementDescription(psiElement, UsageViewNodeTextLocation.INSTANCE);
     }
 }

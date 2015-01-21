@@ -29,10 +29,11 @@ public class CMakeReference extends PsiReferenceBase<PsiElement> implements PsiP
     @Override
     public ResolveResult[] multiResolve(boolean b) {
         Project project = myElement.getProject();
-        final PsiElement[] commands = CMakeParserUtilImpl.getCommandDefinitions(project, name);
+        final List<PsiElement> defs = CMakeParserUtilImpl.getDefinedSymbols(project, name);
         List<ResolveResult> results = new ArrayList<ResolveResult>();
-        for (PsiElement command : commands) {
-            results.add(new PsiElementResolveResult(command));
+        for (PsiElement d : defs) {
+            System.out.println("resolve ->"+d.getText()+"\n");
+            results.add(new PsiElementResolveResult(d));
         }
         return results.toArray(new ResolveResult[results.size()]);
     }
@@ -49,15 +50,16 @@ public class CMakeReference extends PsiReferenceBase<PsiElement> implements PsiP
     public Object[] getVariants() {
         Project project = myElement.getProject();
         // Get list of all command definitions plus keywords in project
-        PsiElement[] commands = CMakeParserUtilImpl.getCommandDefinitions(project, name);
+        List<PsiElement> defs = CMakeParserUtilImpl.getDefinedSymbols(project, name);
         List<LookupElement> variants = new ArrayList<LookupElement>();
         // Populate the variants with resolved elements
-        for (final PsiElement command : commands) {
-            if (command.getText() != null && command.getText().length() > 0) {
+        for (final PsiElement d : defs) {
+            if (d.getText() != null && d.getText().length() > 0) {
                 // command must extend named element
-                variants.add(LookupElementBuilder.create((CMakeCommandName) command).
+                System.out.println("variants ->"+d.getText()+"\n");
+                variants.add(LookupElementBuilder.create((CMakeCommandName) d).
                                 withIcon(CMakeIcons.FILE).
-                                withTypeText(command.getContainingFile().getName())
+                                withTypeText(d.getContainingFile().getName())
                 );
             }
         }
