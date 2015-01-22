@@ -42,13 +42,6 @@ public class CMakeParserUtilImpl {
 //        }
         return element;
     }
-    
-    public static PsiElement[] getCommandDefinitions(Project project, String name)
-    {
-        List<PsiElement> definitions = new ArrayList<PsiElement>();
-        
-        return (PsiElement[]) definitions.toArray();
-    }
 
     public static class CMakeNamedElementFactory {
 //        public static CMake createElement(Project project, String name) {
@@ -108,8 +101,8 @@ public class CMakeParserUtilImpl {
                     public void visitElement(PsiElement element) {
                         super.visitElement(element);
                         if(element instanceof CMakeCommandExpr
-                                && (element.getFirstChild().toString().equalsIgnoreCase("function")
-                                || element.getFirstChild().toString().equalsIgnoreCase("macro")
+                                && (element.getFirstChild().getNode().getElementType() == CMakeTypes.FUNCTION
+                                || element.getFirstChild().getNode().getElementType() == CMakeTypes.MACRO
                                 || element.getFirstChild().toString().equalsIgnoreCase("set")))
                         {
                             result.add(element);
@@ -135,10 +128,9 @@ public class CMakeParserUtilImpl {
                     public void visitElement(PsiElement element) {
                         super.visitElement(element);
                         if(element instanceof CMakeCommandExpr
-                                && (element.getFirstChild().toString().equalsIgnoreCase("function")
-                                    || element.getFirstChild().toString().equalsIgnoreCase("macro")
-                                    || element.getFirstChild().toString().equalsIgnoreCase("set"))
-                                && ((CMakeCommandExpr) element).getArguments().getArgument().toString().equalsIgnoreCase(name))
+                                && (element.getFirstChild().getNode().getElementType() == CMakeTypes.FUNCTION
+                                    || element.getFirstChild().getNode().getElementType() == CMakeTypes.MACRO
+                                    || element.getFirstChild().toString().equalsIgnoreCase("set")))
                         {
                             result.add(element);
                         }
