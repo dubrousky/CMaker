@@ -1,7 +1,9 @@
 package cmake.global;
 
 import cmake.psi.CMakeCommandName;
+import cmake.psi.CMakeNamedElement;
 import com.intellij.lang.HelpID;
+import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.cacheBuilder.WordOccurrence;
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
@@ -10,6 +12,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.ElementDescriptionUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
 import com.intellij.usageView.UsageViewLongNameLocation;
 import com.intellij.usageView.UsageViewNodeTextLocation;
 import com.intellij.usageView.UsageViewTypeLocation;
@@ -23,39 +26,18 @@ import cmake.parsing.CMakeLexerAdapter;
  * Created by alex on 12/30/14.
  */
 public class CMakeFindUsagesProvider implements FindUsagesProvider {
+    private static final DefaultWordsScanner WORDS_SCANNER =
+            new DefaultWordsScanner(new CMakeLexerAdapter(),
+                    TokenSet.create(CMakeTypes.COMMAND_NAME), TokenSet.create(CMakeTypes.LINE_COMMENT), TokenSet.EMPTY);
     @Nullable
     @Override
     public WordsScanner getWordsScanner() {
-        return new WordsScanner() {
-            @Override
-            public void processWords(CharSequence charSequence, Processor<WordOccurrence> processor) {
-                CMakeLexerAdapter lexer = new CMakeLexerAdapter();
-                lexer.start(charSequence);
-                IElementType tokenType;
-                while ((tokenType = lexer.getTokenType()) != null) {
-                    //TODO process occurrences in string literals and comments
-                    if (tokenType == CMakeTypes.VAR_REF 
-                            || tokenType == CMakeTypes.IDENTIFIER) {
-                        int tokenStart = lexer.getTokenStart();
-                        for (TextRange wordRange : StringUtil.getWordIndicesIn(lexer.getTokenText())) {
-                            int start = tokenStart + wordRange.getStartOffset();
-                            int end = tokenStart + wordRange.getEndOffset();
-                            processor.process(new WordOccurrence(charSequence, start, end, WordOccurrence.Kind.CODE));
-                            System.out.println("add->" + lexer.getTokenText() + "\n");
-                            System.out.println(charSequence);
-                        }
-                    }
-                    lexer.advance();
-                }
-            }
-        };
+        return WORDS_SCANNER;
     }
 
     @Override
     public boolean canFindUsagesFor(PsiElement psiElement) {
-        return psiElement instanceof CMakeCommandName
-                || psiElement.getNode().getElementType() == CMakeTypes.IDENTIFIER
-                || psiElement.getNode().getElementType() == CMakeTypes.VAR_REF;
+        return psiElement instanceof CMakeNamedElement;
     }
 
     @Nullable
