@@ -1,17 +1,19 @@
 <idea-plugin version="2">
   <id>cmake</id>
-  <name>CMake Plugin</name>
-  <version>1.0</version>
-  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+  <name>CMaker Plugin</name>
+  <version>0.0.1</version>
+  <vendor email="dubrousky@gmail.com" url="https://github.com/dubrousky/CMaker">CMaker</vendor>
 
   <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <em>most HTML tags may be used</em>
+      This is the plugin for CMake style project support.<br>
+      It provides basic syntax highlight. Planned to add project
+      support and build configurations.
     ]]></description>
-
   <change-notes><![CDATA[
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>
+      <em>v.0.0.1:</em><br>
+      In this version syntax highlighting is provided. Styling is implemented
+      but does not work. Spacing style is implemented, Color settings are working
+      as well.<br>
     ]]>
   </change-notes>
 
