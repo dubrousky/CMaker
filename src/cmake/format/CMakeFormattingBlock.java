@@ -52,7 +52,7 @@ public class CMakeFormattingBlock extends AbstractBlock {
     private List<Block> buildSubBlocks() {
         final List<Block> blocks = new ArrayList<Block>();
         final Alignment baseAlignment = Alignment.createAlignment(true);
-        final Alignment baseAlignment2 = Alignment.createAlignment(true);
+        final Alignment baseAlignment2 = Alignment.createChildAlignment(baseAlignment);
         final Ref<Wrap> chopDownIfLongWrap = new Ref<Wrap>();
 
         for (ASTNode child = myNode.getFirstChildNode(); child != null; child = child.getTreeNext()) {
@@ -110,8 +110,7 @@ public class CMakeFormattingBlock extends AbstractBlock {
                                    @Nullable Alignment baseAlignment2) {
         IElementType childType = child.getElementType();
         IElementType parentType = parent.getElementType();
-        if (parent.getPsi() instanceof CMakeCompoundExpr
-                || parent.getPsi() instanceof CMakePredicateExpr)
+        if (parent.getPsi() instanceof CMakeBody)
             return baseAlignment2;
         return baseAlignment;
     }
@@ -127,7 +126,7 @@ public class CMakeFormattingBlock extends AbstractBlock {
     @Override
     public ChildAttributes getChildAttributes(int newChildIndex) {
 
-        return new ChildAttributes(myIndent, Alignment.createAlignment());
+        return new ChildAttributes(myIndent, Alignment.createChildAlignment(Alignment.createAlignment()));
     }
 
     @Override
