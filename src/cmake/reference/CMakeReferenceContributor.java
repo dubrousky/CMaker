@@ -32,7 +32,7 @@ public class CMakeReferenceContributor extends PsiReferenceContributor {
                         return new PsiReference[0];
                     }
                 });
-        registrar.registerReferenceProvider(PlatformPatterns.psiElement(CMakeUnquotedArgument.class),
+        registrar.registerReferenceProvider(PlatformPatterns.psiElement(CMakeTypes.UNQUOTED_ARGUMENT),
                 new PsiReferenceProvider() {
                     @NotNull
                     @Override
