@@ -46,6 +46,7 @@
     mixin("command_name")="cmake.psi.impl.CMakeNamedElementImpl"
     implements("command_name")="cmake.psi.CMakeNamedElement"
     methods("command_name")=[getNameIdentifier getName setName]
+    methods("command_expr")=[getPresentation]
 
  }
 

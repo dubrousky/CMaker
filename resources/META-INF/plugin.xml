@@ -74,6 +74,8 @@
     <codeInsight.lineMarkerProvider language="CMake" implementationClass="cmake.global.CMakeLineProvider"/>
     <psi.referenceContributor implementation="cmake.reference.CMakeReferenceContributor"/>
     <elementDescriptionProvider implementation="cmake.global.CMakeElementDescriptionProvider"/>
+
+    <gotoSymbolContributor implementation="cmake.nav.CMakeGotoSymbolContributor"/>
   </extensions>
 
   <application-components>

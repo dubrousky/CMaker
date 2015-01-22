@@ -17,6 +17,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.PairProcessor;
 import com.intellij.util.indexing.FileBasedIndex;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -64,13 +65,25 @@ public class CMakeParserUtilImpl {
             return null;
         }
     }
-
-    public static ItemPresentation getPresentation(final CMakeFunmacro element) {
+    @NotNull
+    public static ItemPresentation getPresentation(final CMakeCommandExpr element) {
         return new ItemPresentation() {
             @Nullable
             @Override
             public String getPresentableText() {
-                return element.getCompoundExpr().getFirstChild().getText();
+                CMakeArguments args = ((CMakeCommandExpr) element).getArguments();
+                StringBuilder stringBuilder = new StringBuilder();
+                if(args.getTextLength()>0) {
+                    stringBuilder.append(args.getArgument().getText())
+                            .append("(");
+                    for (PsiElement a : args.getSeparatedArgumentList()) {
+                        stringBuilder.append(" ");
+                        stringBuilder.append(a.getText());
+                    }
+                    stringBuilder.append(" ) : ")
+                            .append(element.getFirstChild().getText());
+                }
+                return  stringBuilder.toString();
             }
 
             @Nullable
@@ -82,7 +95,13 @@ public class CMakeParserUtilImpl {
             @Nullable
             @Override
             public Icon getIcon(boolean unused) {
-                return CMakeIcons.FILE;
+                
+                if(element.getFirstChild() instanceof  CMakeFbegin)
+                    return CMakeIcons.FUN;
+                else if(element.getFirstChild() instanceof  CMakeFbegin)
+                    return CMakeIcons.MACRO;
+                else 
+                    return null;
             }
         };
     }
