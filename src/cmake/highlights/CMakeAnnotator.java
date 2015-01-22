@@ -111,7 +111,7 @@ public class CMakeAnnotator implements Annotator {
     public void annotate(PsiElement psiElement, AnnotationHolder annotationHolder) {
         // Annotate and highlight the cmake keywords 
         if (psiElement instanceof CMakeCommandName) {
-            if(keywords.contains(psiElement.getText())) {
+            if(keywords.contains(psiElement.getText().toLowerCase())) {
                 TextRange range = new TextRange(psiElement.getTextRange().getStartOffset(),
                         psiElement.getTextRange().getStartOffset() + psiElement.getTextRange().getLength());
                 Annotation annotation = annotationHolder.createInfoAnnotation(range, null);
@@ -137,6 +137,30 @@ public class CMakeAnnotator implements Annotator {
                         psiElement.getTextRange().getStartOffset() + psiElement.getTextRange().getLength());
                 Annotation annotation = annotationHolder.createInfoAnnotation(range, null);
                 annotation.setTextAttributes(DefaultLanguageHighlighterColors.KEYWORD);
+        }
+        // Annotate logical operators
+        else if(psiElement instanceof CMakeUnquotedArgument
+                && (psiElement.getText().contains("NOT")
+                        || psiElement.getText().contains("AND")
+                        || psiElement.getText().contains("OR")
+                        || psiElement.getText().contains("STREQUAL"))
+                ){
+                TextRange range = new TextRange(psiElement.getTextRange().getStartOffset(),
+                        psiElement.getTextRange().getStartOffset() + psiElement.getTextRange().getLength());
+                Annotation annotation = annotationHolder.createInfoAnnotation(range, null);
+                annotation.setTextAttributes(DefaultLanguageHighlighterColors.OPERATION_SIGN);
+        }
+        // Annotate logical constants
+        else if(psiElement instanceof CMakeUnquotedArgument
+                && (psiElement.getText().contains("ON")
+                || psiElement.getText().contains("OFF")
+                || psiElement.getText().contains("TRUE")
+                ||psiElement.getText().contains("FALSE") )
+                ){
+                TextRange range = new TextRange(psiElement.getTextRange().getStartOffset(),
+                        psiElement.getTextRange().getStartOffset() + psiElement.getTextRange().getLength());
+                Annotation annotation = annotationHolder.createInfoAnnotation(range, null);
+                annotation.setTextAttributes(DefaultLanguageHighlighterColors.CONSTANT);
         }
         // Annotate variable expansion
         else if(psiElement.getNode().getElementType() == CMakeTypes.VAR_REF) {

@@ -15,25 +15,21 @@
   tokenTypeClass="cmake.psi.CMakeTokenType"
   
   tokens = [
-    op_and='regexp:AND'
-    op_or='regexp:OR'
-    op_not='regexp:NOT'
-    endfunction="regexp:endfunction"
-    function="regexp:function"
-    elseif="regexp:elseif"
-    else="regexp:else"
-    endif="regexp:endif"
-    if="regexp:if"
-    endmacro="regexp:endmacro"
-    macro="regexp:macro"
-    endforeach="regexp:endforeach"
-    foreach="regexp:foreach"
-    endwhile="regexp:endwhile"
-    while="regexp:while"
+    endfunction="regexp:endfunction|ENDFUNCTION"
+    function="regexp:function|FUNCTION"
+    elseif="regexp:elseif|ELSIF"
+    else="regexp:else|ELSE"
+    endif="regexp:endif|ENDIF"
+    if="regexp:if|IF"
+    endmacro="regexp:endmacro|ENDMACRO"
+    macro="regexp:macro|MACRO"
+    endforeach="regexp:endforeach|ENDFOREACH"
+    foreach="regexp:foreach|FOREACH"
+    endwhile="regexp:endwhile|ENDWHILE"
+    while="regexp:while|ENDWHILE"
     lpar='('
     rpar=')'
     number='regexp:\d+(\.\d*)?'
-    bool='regexp:ON|OFF|TRUE|FALSE'
     bracket_comment = 'regexp:(\#\[=*\[)([^\]]|\n)*?(\]=*\])'
     bracket_argument = 'regexp:(\[=*\[)([^\]]|\n)*?(\]=*\])'
     line_comment='regexp:\#.*'
@@ -96,8 +92,9 @@
  endif_expr       ::= <<command_expr (endif)>>
 
  // Body
- body              ::= (loop|cond|cmd|line_ending)+
- 
+ //body              ::= (loop|cond|cmd|line_ending)+
+ // Allow nested functions
+ body                ::=  file_element+
  // Single command invocation
  cmd                 ::=  <<command_expr command_name>>
  command_name        ::=  identifier 
