@@ -198,13 +198,46 @@ public class CMakeAnnotator implements Annotator {
                 }
         }
         // Annotate missing predicate condition
-        else if(psiElement instanceof CMakeElseifExpr){
+        else if(psiElement instanceof CMakeElseifExpr) {
                 CMakeArguments args = ((CMakeElseifExpr) psiElement).getCommandExpr().getArguments();
-                if( null == args.getArgument()) {
+                if (null == args.getArgument()) {
                         TextRange range = new TextRange(args.getTextRange().getStartOffset(),
                                 args.getTextRange().getStartOffset() + args.getTextRange().getLength());
                         Annotation annotation = annotationHolder.createErrorAnnotation(range, "Predicate such as if/elsif must have a condition");
                 }
         }
+        // Annotate string ops
+        /*
+        string(REGEX MATCH <regular_expression>
+       <output variable> <input> [<input>...])
+        string(REGEX MATCHALL <regular_expression>
+       <output variable> <input> [<input>...])
+        string(REGEX REPLACE <regular_expression>
+       <replace_expression> <output variable>
+       <input> [<input>...])
+        string(REPLACE <match_string>
+       <replace_string> <output variable>
+       <input> [<input>...])
+        string(CONCAT <output variable> [<input>...])
+        string(<MD5|SHA1|SHA224|SHA256|SHA384|SHA512>
+       <output variable> <input>)
+        string(COMPARE EQUAL <string1> <string2> <output variable>)
+        string(COMPARE NOTEQUAL <string1> <string2> <output variable>)
+        string(COMPARE LESS <string1> <string2> <output variable>)
+        string(COMPARE GREATER <string1> <string2> <output variable>)
+        string(ASCII <number> [<number> ...] <output variable>)
+        string(CONFIGURE <string1> <output variable>
+       [@ONLY] [ESCAPE_QUOTES])
+        string(TOUPPER <string1> <output variable>)
+        string(TOLOWER <string1> <output variable>)
+        string(LENGTH <string> <output variable>)
+        string(SUBSTRING <string> <begin> <length> <output variable>)
+        string(STRIP <string> <output variable>)
+        string(RANDOM [LENGTH <length>] [ALPHABET <alphabet>]
+       [RANDOM_SEED <seed>] <output variable>)
+        string(FIND <string> <substring> <output variable> [REVERSE])
+        string(TIMESTAMP <output variable> [<format string>] [UTC])
+        string(MAKE_C_IDENTIFIER <input string> <output variable>)
+        */
     }
 }

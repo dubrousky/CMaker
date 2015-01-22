@@ -119,7 +119,7 @@ public class CMakeStructureViewFactory implements PsiStructureViewFactory {
         @Nullable
         @Override
         public String getLocationString() {
-            return null!=myElement?myElement.getContainingFile().getName():null;
+            return null!=myElement.getContainingFile()?myElement.getContainingFile().getName():null;
         }
 
         @Nullable
@@ -183,23 +183,14 @@ public class CMakeStructureViewFactory implements PsiStructureViewFactory {
             // Do it only for the CMake file root element
             if (myElement instanceof CMakeFile) {
                 final List<TreeElement> treeElements = new ArrayList<TreeElement>();
-                // Carve compound expressions that represent function definitions
-                // cmake_file
-                // |-file_element
-                //   |-block
-                //     |-compound_expr
-                //       |-fbegin <<function(arguments)>>
-                /*CMakeFileElement[] elements = PsiTreeUtil.getChildrenOfType(myElement, CMakeFileElement.class);
-                if(null != elements) {
-                    // Scan elements for definition blocks
-                    for (CMakeFileElement e : elements) {
-                        if (e.getFirstChild() instanceof CMakeFunmacro) {
-                            treeElements.add(new CMakeViewElement(e.getFunmacro().getCompoundExpr()));
-                        }
-                    }
-                }*/
-                List<PsiElement> elements = CMakeParserUtilImpl.getDefinedSymbols(myElement);
-                for (PsiElement e : elements) {
+                // Show function definitions
+                List<PsiElement> funmacro = CMakeParserUtilImpl.getDefinedSymbols(myElement);
+                for (PsiElement e : funmacro) {
+                    treeElements.add(new CMakeViewElement(e));
+                }
+                // Show variables
+                List<PsiElement> vars = CMakeParserUtilImpl.getDefinedVars(myElement);
+                for (PsiElement e : vars) {
                     treeElements.add(new CMakeViewElement(e));
                 }
                 return treeElements.toArray(new TreeElement[treeElements.size()]);

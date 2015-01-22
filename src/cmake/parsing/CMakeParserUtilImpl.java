@@ -96,9 +96,9 @@ public class CMakeParserUtilImpl {
             @Override
             public Icon getIcon(boolean unused) {
                 
-                if(element.getFirstChild() instanceof  CMakeFbegin)
+                if(element.getFirstChild().getText().contains("function"))
                     return CMakeIcons.FUN;
-                else if(element.getFirstChild() instanceof  CMakeFbegin)
+                else if(element.getFirstChild().getText().contains("macro"))
                     return CMakeIcons.MACRO;
                 else 
                     return null;
@@ -171,6 +171,54 @@ public class CMakeParserUtilImpl {
                             && (element.getFirstChild().getNode().getElementType() == CMakeTypes.FUNCTION
                             || element.getFirstChild().getNode().getElementType() == CMakeTypes.MACRO
                             || element.getFirstChild().toString().equalsIgnoreCase("set")))
+                    {
+                        result.add(element);
+                    }
+                }
+            });
+        }
+        return result;
+    }
+    
+    
+    public static List<PsiElement> getDefinedVars(Project project, String name) {
+        final List<PsiElement> result = new ArrayList<PsiElement>();
+        Collection<VirtualFile> virtualFiles = FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME,
+                CMakeFileType.INSTANCE,
+                GlobalSearchScope.allScope(project));
+        // Scan each file for named entities
+        for (VirtualFile virtualFile : virtualFiles) {
+            CMakeFile cmakeFile = (CMakeFile) PsiManager.getInstance(project).findFile(virtualFile);
+            if (cmakeFile != null) {
+                cmakeFile.accept(new PsiRecursiveElementWalkingVisitor() {
+                    @Override
+                    public void visitElement(PsiElement element) {
+                        super.visitElement(element);
+                        if(element instanceof CMakeCommandExpr
+                                && (element.getFirstChild().getText().contains("set")
+                                || element.getFirstChild().getText().contains("list")
+                                || element.getFirstChild().getText().contains("option")))
+                        {
+                            result.add(element);
+                        }
+                    }
+                });
+            }
+        }
+        return result;
+    }
+
+    public static List<PsiElement> getDefinedVars(PsiElement root) {
+        final List<PsiElement> result = new ArrayList<PsiElement>();
+        if(root instanceof CMakeFile){
+            root.accept(new PsiRecursiveElementWalkingVisitor() {
+                @Override
+                public void visitElement(PsiElement element) {
+                    super.visitElement(element);
+                    if(element instanceof CMakeCommandExpr
+                            && (element.getFirstChild().getText().contains("set")
+                            || element.getFirstChild().getText().contains("list")
+                            || element.getFirstChild().getText().contains("option")))
                     {
                         result.add(element);
                     }
