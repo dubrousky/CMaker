@@ -3,7 +3,10 @@ package cmake.format;
 import cmake.psi.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.formatting.Indent;
+import com.intellij.openapi.util.Condition;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,20 +20,19 @@ public class CMakeIndentProcessor {
     }
 
     public Indent getChildIndent(ASTNode node) {
-        String debug = "<"+node.getText()+">";
-        if (
-                null != node
-                && null != node.getTreeParent()
-                && node.getTreeParent().getPsi() instanceof CMakeBody
-            ) 
+        String debug = "<"+node.getText()+">\n";
+        if (null != node
+            &&node.getPsi() instanceof CMakeFileElement
+            &&null != PsiTreeUtil.findFirstParent(node.getPsi(), new Condition<PsiElement>() {
+                    @Override
+                    public boolean value(PsiElement psiElement) {
+                        return psiElement instanceof CMakeBody;
+                    }
+            }))
         {
             System.out.print(debug);
-            return Indent.getNormalIndent(false);
+            return Indent.getContinuationIndent(false);
         }
         return Indent.getNoneIndent();
-    }
-
-    private static boolean needIndent(@Nullable IElementType type) {
-        return type != null && CMakeFormattingBlock.BLOCKS_TOKEN_SET.contains(type);
     }
 }

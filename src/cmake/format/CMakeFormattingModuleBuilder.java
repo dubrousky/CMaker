@@ -23,10 +23,9 @@ public class CMakeFormattingModuleBuilder implements FormattingModelBuilder {
         CMakeCodeStyleSettings cmakeSettings = settings.getCustomSettings(CMakeCodeStyleSettings.class);
         SpacingBuilder spacingBuilder = createSpacingBuilder(settings, cmakeSettings);
         CMakeFormattingBlock block = new CMakeFormattingBlock(element.getNode(),
-                                                                Alignment.createAlignment(),
-                                                                Wrap.createWrap(WrapType.NONE,true),
-                                                                spacingBuilder
-                                                                );
+                Wrap.createWrap(WrapType.NONE,true),
+                null,
+                spacingBuilder);
         return FormattingModelProvider.createFormattingModelForPsiFile(element.getContainingFile(), block, settings);
     }
 
@@ -40,10 +39,15 @@ public class CMakeFormattingModuleBuilder implements FormattingModelBuilder {
                 .after(CMakeTypes.PREDICATE_EXPR).lineBreakInCodeIf(true)
                 .before(CMakeTypes.SEPARATED_ARGUMENT).spaceIf(true)
                 .after(CMakeTypes.COMMAND_NAME).spaceIf(false)
-                .after(CMakeTypes.IDENTIFIER).spaceIf(false)
-                .after(CMakeTypes.LPAR).spaceIf(true)
-                .before(CMakeTypes.RPAR).spaceIf(true)
-                .after(CMakeTypes.SEP).spaceIf(true)
+                .after(CMakeTypes.LPAR).spaceIf(false)
+                .before(CMakeTypes.RPAR).spaceIf(false)
+                .after(CMakeTypes.FILE_ELEMENT).lineBreakInCode()
+                .after(CMakeTypes.FBEGIN).lineBreakInCode()
+                .after(CMakeTypes.FEND).lineBreakInCode()
+                .after(CMakeTypes.MBEGIN).lineBreakInCode()
+                .after(CMakeTypes.MEND).lineBreakInCode()
+                .after(CMakeTypes.WHILEBEGIN).lineBreakInCode()
+                .after(CMakeTypes.WHILEEND).lineBreakInCode()
                 ;
         
     }
