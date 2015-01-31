@@ -109,103 +109,14 @@ public class CMakeAnnotator implements Annotator {
     }
     @Override
     public void annotate(PsiElement psiElement, AnnotationHolder annotationHolder) {
-        // Annotate and highlight the cmake keywords 
-        if (psiElement instanceof CMakeCommandName) {
-            if(keywords.contains(psiElement.getText().toLowerCase())) {
-                TextRange range = new TextRange(psiElement.getTextRange().getStartOffset(),
-                        psiElement.getTextRange().getStartOffset() + psiElement.getTextRange().getLength());
-                Annotation annotation = annotationHolder.createInfoAnnotation(range, null);
-                annotation.setTextAttributes(DefaultLanguageHighlighterColors.KEYWORD);
-            }
-        }
-        // Also highlight block keywords
-        else if(psiElement.getNode().getElementType()== CMakeTypes.IF
-                ||psiElement.getNode().getElementType()== CMakeTypes.ELSE
-                ||psiElement.getNode().getElementType()== CMakeTypes.ELSEIF
-                ||psiElement.getNode().getElementType()== CMakeTypes.ENDIF
-                ||psiElement.getNode().getElementType()== CMakeTypes.FUNCTION
-                ||psiElement.getNode().getElementType()== CMakeTypes.MACRO
-                ||psiElement.getNode().getElementType()== CMakeTypes.ENDFUNCTION
-                ||psiElement.getNode().getElementType()== CMakeTypes.ENDMACRO
-                ||psiElement.getNode().getElementType()== CMakeTypes.WHILE
-                ||psiElement.getNode().getElementType()== CMakeTypes.FOREACH
-                ||psiElement.getNode().getElementType()== CMakeTypes.ENDWHILE
-                ||psiElement.getNode().getElementType()== CMakeTypes.ENDFOREACH
-                )
-        {
-                TextRange range = new TextRange(psiElement.getTextRange().getStartOffset(),
-                        psiElement.getTextRange().getStartOffset() + psiElement.getTextRange().getLength());
-                Annotation annotation = annotationHolder.createInfoAnnotation(range, null);
-                annotation.setTextAttributes(DefaultLanguageHighlighterColors.KEYWORD);
-        }
-        // Annotate logical operators
-        else if(psiElement instanceof CMakeUnquotedArgument
-                && (psiElement.getText().contains("NOT")
-                        || psiElement.getText().contains("AND")
-                        || psiElement.getText().contains("OR")
-                        || psiElement.getText().contains("STREQUAL"))
-                ){
-                TextRange range = new TextRange(psiElement.getTextRange().getStartOffset(),
-                        psiElement.getTextRange().getStartOffset() + psiElement.getTextRange().getLength());
-                Annotation annotation = annotationHolder.createInfoAnnotation(range, null);
-                annotation.setTextAttributes(DefaultLanguageHighlighterColors.OPERATION_SIGN);
-        }
-        // Annotate logical constants
-        else if(psiElement instanceof CMakeUnquotedArgument
-                && (psiElement.getText().contains("ON")
-                || psiElement.getText().contains("OFF")
-                || psiElement.getText().contains("TRUE")
-                ||psiElement.getText().contains("FALSE") )
-                ){
-                TextRange range = new TextRange(psiElement.getTextRange().getStartOffset(),
-                        psiElement.getTextRange().getStartOffset() + psiElement.getTextRange().getLength());
-                Annotation annotation = annotationHolder.createInfoAnnotation(range, null);
-                annotation.setTextAttributes(DefaultLanguageHighlighterColors.CONSTANT);
-        }
-        // Annotate variable expansion
-        else if(psiElement.getNode().getElementType() == CMakeTypes.VAR_REF) {
-                TextRange range = new TextRange(psiElement.getTextRange().getStartOffset()+2,
-                        psiElement.getTextRange().getStartOffset() + psiElement.getTextRange().getLength()-1);
-                Annotation annotation = annotationHolder.createInfoAnnotation(range, null);
-                annotation.setTextAttributes(DefaultLanguageHighlighterColors.PREDEFINED_SYMBOL); 
-                
-        }
-        // Annotate missing function name
-        else if(psiElement instanceof CMakeFbegin){
-                CMakeArguments args = ((CMakeFbegin) psiElement).getCommandExpr().getArguments();
-                if( null == args.getArgument()) {
-                        TextRange range = new TextRange(args.getTextRange().getStartOffset(),
-                                args.getTextRange().getStartOffset() + args.getTextRange().getLength());
-                        Annotation annotation = annotationHolder.createErrorAnnotation(range, "Function must have a name");
-                }
-        }
-        // Annotate missing macro name
-        else if(psiElement instanceof CMakeMbegin){
-                CMakeArguments args = ((CMakeMbegin) psiElement).getCommandExpr().getArguments();
-                if( null == args.getArgument()) {
-                        TextRange range = new TextRange(args.getTextRange().getStartOffset(),
-                                args.getTextRange().getStartOffset() + args.getTextRange().getLength());
-                        Annotation annotation = annotationHolder.createErrorAnnotation(range, "Macro must have a name");
-                }
-        }
-        // Annotate missing predicate condition
-        else if(psiElement instanceof CMakeIfExpr){
-                CMakeArguments args = ((CMakeIfExpr) psiElement).getCommandExpr().getArguments();
-                if( null == args.getArgument()) {
-                        TextRange range = new TextRange(args.getTextRange().getStartOffset(),
-                                args.getTextRange().getStartOffset() + args.getTextRange().getLength());
-                        Annotation annotation = annotationHolder.createErrorAnnotation(range, "Predicate such as if/elsif must have a condition");
-                }
-        }
-        // Annotate missing predicate condition
-        else if(psiElement instanceof CMakeElseifExpr) {
-                CMakeArguments args = ((CMakeElseifExpr) psiElement).getCommandExpr().getArguments();
-                if (null == args.getArgument()) {
-                        TextRange range = new TextRange(args.getTextRange().getStartOffset(),
-                                args.getTextRange().getStartOffset() + args.getTextRange().getLength());
-                        Annotation annotation = annotationHolder.createErrorAnnotation(range, "Predicate such as if/elsif must have a condition");
-                }
-        }
+        this.annotateKeyword(psiElement, annotationHolder);
+        this.annotateLogicalConstants(psiElement,annotationHolder);
+        this.annotateLogicalOperators(psiElement,annotationHolder);
+        this.annotateMissingCond(psiElement,annotationHolder);
+        this.annotateMissingFunctionName(psiElement,annotationHolder);
+        this.annotateMissingMacroName(psiElement,annotationHolder);
+        this.annotateVarExpansion(psiElement,annotationHolder);
+
         // Annotate string ops
         /*
         string(REGEX MATCH <regular_expression>
@@ -240,4 +151,151 @@ public class CMakeAnnotator implements Annotator {
         string(MAKE_C_IDENTIFIER <input string> <output variable>)
         */
     }
+
+    /**
+     * Creates color annotation for keywords
+     * @param psiElement
+     * @param annotationHolder
+     */
+    void annotateKeyword(PsiElement psiElement, AnnotationHolder annotationHolder) {
+        if (psiElement instanceof CMakeCommandName) {
+            if(keywords.contains(psiElement.getText().toLowerCase())) {
+                TextRange range = new TextRange(psiElement.getTextRange().getStartOffset(),
+                        psiElement.getTextRange().getStartOffset() + psiElement.getTextRange().getLength());
+                Annotation annotation = annotationHolder.createInfoAnnotation(range, null);
+                annotation.setTextAttributes(DefaultLanguageHighlighterColors.KEYWORD);
+            }
+        }
+        // Also highlight block keywords
+        if(psiElement.getNode().getElementType()== CMakeTypes.IF
+                ||psiElement.getNode().getElementType()== CMakeTypes.ELSE
+                ||psiElement.getNode().getElementType()== CMakeTypes.ELSEIF
+                ||psiElement.getNode().getElementType()== CMakeTypes.ENDIF
+                ||psiElement.getNode().getElementType()== CMakeTypes.FUNCTION
+                ||psiElement.getNode().getElementType()== CMakeTypes.MACRO
+                ||psiElement.getNode().getElementType()== CMakeTypes.ENDFUNCTION
+                ||psiElement.getNode().getElementType()== CMakeTypes.ENDMACRO
+                ||psiElement.getNode().getElementType()== CMakeTypes.WHILE
+                ||psiElement.getNode().getElementType()== CMakeTypes.FOREACH
+                ||psiElement.getNode().getElementType()== CMakeTypes.ENDWHILE
+                ||psiElement.getNode().getElementType()== CMakeTypes.ENDFOREACH
+                )
+        {
+            TextRange range = new TextRange(psiElement.getTextRange().getStartOffset(),
+                    psiElement.getTextRange().getStartOffset() + psiElement.getTextRange().getLength());
+            Annotation annotation = annotationHolder.createInfoAnnotation(range, null);
+            annotation.setTextAttributes(DefaultLanguageHighlighterColors.KEYWORD);
+        }
+    }
+
+    /**
+     * Annotates logical and equality operators
+     * @param psiElement
+     * @param annotationHolder
+     */
+    void annotateLogicalOperators(PsiElement psiElement, AnnotationHolder annotationHolder) {
+        // Annotate logical operators
+        if(psiElement instanceof CMakeArgument
+                && (psiElement.getText().contains("NOT")
+                || psiElement.getText().contains("AND")
+                || psiElement.getText().contains("OR")
+                || psiElement.getText().contains("STREQUAL"))
+                ){
+            TextRange range = new TextRange(psiElement.getTextRange().getStartOffset(),
+                    psiElement.getTextRange().getStartOffset() + psiElement.getTextRange().getLength());
+            Annotation annotation = annotationHolder.createInfoAnnotation(range, null);
+            annotation.setTextAttributes(DefaultLanguageHighlighterColors.OPERATION_SIGN);
+        }
+    }
+
+    /**
+     * Annotates logical constants
+     * @param psiElement
+     * @param annotationHolder
+     */
+    void annotateLogicalConstants(PsiElement psiElement, AnnotationHolder annotationHolder) {
+        // Annotate logical constants
+        if(psiElement instanceof CMakeArgument
+                && (psiElement.getText().contains("ON")
+                || psiElement.getText().contains("OFF")
+                || psiElement.getText().contains("TRUE")
+                ||psiElement.getText().contains("FALSE") )
+                ){
+            TextRange range = new TextRange(psiElement.getTextRange().getStartOffset(),
+                    psiElement.getTextRange().getStartOffset() + psiElement.getTextRange().getLength());
+            Annotation annotation = annotationHolder.createInfoAnnotation(range, null);
+            annotation.setTextAttributes(DefaultLanguageHighlighterColors.CONSTANT);
+        }
+    }
+
+    /**
+     * 
+     * @param psiElement
+     * @param annotationHolder
+     */
+    void annotateVarExpansion(PsiElement psiElement, AnnotationHolder annotationHolder) {
+        // Annotate variable expansion
+        if(psiElement instanceof CMakeArgument) {
+            String argtext = psiElement.getText();
+            int pos = psiElement.getTextRange().getStartOffset();
+
+            while(argtext.matches(".*\\$\\{.*\\}.*")) {
+                int vstart = argtext.indexOf("${");
+                int vend = argtext.indexOf("}");
+
+                TextRange range = new TextRange(pos+vstart, pos+vend+1);
+                Annotation annotation = annotationHolder.createInfoAnnotation(range, null);
+                annotation.setTextAttributes(DefaultLanguageHighlighterColors.CONSTANT);
+
+                argtext = argtext.substring(vend+1);
+                pos+=vend+1;
+            }
+        }
+    }
+
+    void annotateMissingFunctionName(PsiElement psiElement, AnnotationHolder annotationHolder) {
+        // Annotate missing function name
+        if(psiElement instanceof CMakeFbegin) {
+            CMakeArguments args = ((CMakeFbegin) psiElement).getCommandExpr().getArguments();
+            if (null == args.getArgument()) {
+                TextRange range = new TextRange(args.getTextRange().getStartOffset(),
+                        args.getTextRange().getStartOffset() + args.getTextRange().getLength());
+                Annotation annotation = annotationHolder.createErrorAnnotation(range, "Function must have a name");
+            }
+        }
+    }
+
+    void annotateMissingMacroName(PsiElement psiElement, AnnotationHolder annotationHolder) {
+        // Annotate missing macro name
+        if(psiElement instanceof CMakeMbegin){
+            CMakeArguments args = ((CMakeMbegin) psiElement).getCommandExpr().getArguments();
+            if( null == args.getArgument()) {
+                TextRange range = new TextRange(args.getTextRange().getStartOffset(),
+                        args.getTextRange().getStartOffset() + args.getTextRange().getLength());
+                Annotation annotation = annotationHolder.createErrorAnnotation(range, "Macro must have a name");
+            }
+        }
+    } 
+
+    void annotateMissingCond(PsiElement psiElement, AnnotationHolder annotationHolder) {
+        // Annotate missing predicate condition
+        if(psiElement instanceof CMakeIfExpr){
+            CMakeArguments args = ((CMakeIfExpr) psiElement).getCommandExpr().getArguments();
+            if( null == args.getArgument()) {
+                TextRange range = new TextRange(args.getTextRange().getStartOffset(),
+                        args.getTextRange().getStartOffset() + args.getTextRange().getLength());
+                Annotation annotation = annotationHolder.createErrorAnnotation(range, "Predicate such as if/elsif must have a condition");
+            }
+        }
+        // Annotate missing predicate condition
+        if(psiElement instanceof CMakeElseifExpr) {
+            CMakeArguments args = ((CMakeElseifExpr) psiElement).getCommandExpr().getArguments();
+            if (null == args.getArgument()) {
+                TextRange range = new TextRange(args.getTextRange().getStartOffset(),
+                        args.getTextRange().getStartOffset() + args.getTextRange().getLength());
+                Annotation annotation = annotationHolder.createErrorAnnotation(range, "Predicate such as if/elsif must have a condition");
+            }
+        }
+    }
+    
 }
