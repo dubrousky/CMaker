@@ -76,6 +76,9 @@
     <elementDescriptionProvider implementation="cmake.global.CMakeElementDescriptionProvider"/>
 
     <gotoSymbolContributor implementation="cmake.nav.CMakeGotoSymbolContributor"/>
+    <configurationType implementation="cmake.run.CMakeRunConfigurationType"/>
+    <fileBasedIndex implementation="cmake.indexing.CMakeFileIndexExtension"/>
+    <documentationProvider implementation="cmake.doc.CMakeDocumentationProvider"/>
   </extensions>
 
   <application-components>

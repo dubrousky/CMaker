@@ -14,11 +14,11 @@ import cmake.psi.CMakeTypes;
 public class CMakeBraceMatcher implements PairedBraceMatcher {
 
     private static final BracePair[] PAIRS = new BracePair[]{
-            new BracePair(CMakeTypes.LPAR, CMakeTypes.RPAR, true)//,
-            //new BracePair(CMakeElementTypes.LEFT_PAR, CMakeElementTypes.RIGHT_PAR, false),
-            //new BracePair(CMakeElementTypes.LEFT_ASSOCIATION, CMakeElementTypes.RIGHT_ASSOCIATION, false),
-            //new BracePair(CMakeElementTypes.LEFT_BRACKET, CMakeElementTypes.RIGHT_BRACKET, true),
-            //new BracePair(CMakeElementTypes.PART_BEGIN, CMakeElementTypes.RIGHT_BRACKET, true)
+            new BracePair(CMakeTypes.LPAR, CMakeTypes.RPAR, true),
+            new BracePair(CMakeTypes.FBEGIN, CMakeTypes.FEND, true),
+            new BracePair(CMakeTypes.MBEGIN, CMakeTypes.MEND, true),
+            new BracePair(CMakeTypes.WHILEBEGIN, CMakeTypes.WHILEEND, true),
+            new BracePair(CMakeTypes.FORBEGIN, CMakeTypes.FOREND, true)
     };
 
     /**

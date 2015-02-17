@@ -95,6 +95,11 @@ public class CMakeStructureViewFactory implements PsiStructureViewFactory {
         @Nullable
         @Override
         public String getPresentableText() {
+            /*
+            if(myElement instanceof CMakeCommandExpr)
+                ((CMakeCommandExpr) myElement).getPresentation().getPresentableText();
+            return null;
+            */
             if(myElement instanceof CMakeCommandExpr) {
                 CMakeArguments args = ((CMakeCommandExpr) myElement).getArguments();
                 StringBuilder stringBuilder = new StringBuilder();
@@ -113,12 +118,16 @@ public class CMakeStructureViewFactory implements PsiStructureViewFactory {
             else if(myElement instanceof CMakeFile)
                 return myElement.getContainingFile().getName();
             else
-                return null;
+                return "";
         }
 
         @Nullable
         @Override
         public String getLocationString() {
+            /*if(myElement instanceof CMakeCommandExpr)
+                ((CMakeCommandExpr) myElement).getPresentation().getLocationString();
+            return null;
+            */
             return null!=myElement.getContainingFile()?myElement.getContainingFile().getName():null;
         }
 
@@ -193,6 +202,8 @@ public class CMakeStructureViewFactory implements PsiStructureViewFactory {
                 for (PsiElement e : vars) {
                     treeElements.add(new CMakeViewElement(e));
                 }
+                // TODO: Show libraries
+                // TODO: Show executables
                 return treeElements.toArray(new TreeElement[treeElements.size()]);
             } else {
                 return EMPTY_ARRAY;

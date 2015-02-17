@@ -91,11 +91,8 @@ public class CMakeHighlighter extends SyntaxHighlighterBase {
         keys1.put(CMakeTypes.LPAR, BRACES);
         keys1.put(CMakeTypes.RPAR, BRACES);
         keys1.put(TokenType.BAD_CHARACTER, BADCHAR);
-        keys1.put(CMakeTypes.VAR_REF, VAREXP);
         //keys1.put(CMakeTypes.ESCAPED_CHAR,ESCAPED_CHAR);
         keys1.put(CMakeTypes.BRACKET_COMMENT,BLOCK_COMMENT);
-        keys1.put(CMakeTypes.NUMBER,NUMBER);
-        keys1.put(CMakeTypes.IDENTIFIER,IDENTIFIER);
         // Keywords moved to the annotator
     }
     @NotNull

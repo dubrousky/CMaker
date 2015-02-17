@@ -2,7 +2,6 @@ package cmake.reference;
 
 import cmake.psi.CMakeCommandName;
 import cmake.psi.CMakeTypes;
-import cmake.psi.CMakeUnquotedArgument;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.*;
@@ -32,22 +31,22 @@ public class CMakeReferenceContributor extends PsiReferenceContributor {
                         return new PsiReference[0];
                     }
                 });
-        registrar.registerReferenceProvider(PlatformPatterns.psiElement(CMakeTypes.UNQUOTED_ARGUMENT),
-                new PsiReferenceProvider() {
-                    @NotNull
-                    @Override
-                    public PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
-                        if(element instanceof CMakeUnquotedArgument){
-                            CMakeUnquotedArgument literalExpression = (CMakeUnquotedArgument) element;
-                            String text = (String) literalExpression.getText();
-                            if (text != null) {
-                                System.out.println("index ->"+text+"\n");
-                                return new PsiReference[]{new CMakeReference(element, new TextRange(0, text.length() + 1))};
-                            }
-
-                        }
-                        return new PsiReference[0];
-                    }
-                });
+//        registrar.registerReferenceProvider(PlatformPatterns.psiElement(CMakeTypes.UNQUOTED_ARGUMENT),
+//                new PsiReferenceProvider() {
+//                    @NotNull
+//                    @Override
+//                    public PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
+//                        if(element instanceof CMakeUnquotedArgument){
+//                            CMakeUnquotedArgument literalExpression = (CMakeUnquotedArgument) element;
+//                            String text = (String) literalExpression.getText();
+//                            if (text != null) {
+//                                System.out.println("index ->"+text+"\n");
+//                                return new PsiReference[]{new CMakeReference(element, new TextRange(0, text.length() + 1))};
+//                            }
+//
+//                        }
+//                        return new PsiReference[0];
+//                    }
+//                });
     }
 }

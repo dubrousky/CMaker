@@ -71,14 +71,17 @@ public class CMakeParserDefinition implements ParserDefinition {
     @Override
     public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode astNode, ASTNode astNode1) {
         // Tune the separator behavior between the tokens
-        if( (astNode.getElementType() == CMakeTypes.FILE_ELEMENT 
+        if( (astNode.getElementType()  == CMakeTypes.FILE_ELEMENT 
             ||astNode.getElementType() == CMakeTypes.COMPOUND_EXPR
-            ||astNode.getElementType()==CMakeTypes.COMMAND_EXPR
-            ||astNode.getElementType()==CMakeTypes.LINE_COMMENT)
+            ||astNode.getElementType() == CMakeTypes.COMMAND_EXPR
+            ||astNode.getElementType() == CMakeTypes.LINE_COMMENT)
                 && !getCommentTokens().contains(astNode1.getElementType())  )
             return SpaceRequirements.MUST_LINE_BREAK;
         
-        if( (astNode.getElementType() == CMakeTypes.ARGUMENT && astNode1.getElementType() == CMakeTypes.ARGUMENT))
+        if( (astNode.getElementType() == CMakeTypes.ARGUMENT 
+                && astNode1.getElementType() == CMakeTypes.ARGUMENT))
+            return SpaceRequirements.MUST;
+        if( astNode.getElementType() == CMakeTypes.UNQUOTED_ARGUMENT )
             return SpaceRequirements.MUST;
         if( (astNode.getElementType() == CMakeTypes.COMMAND_NAME))
             return SpaceRequirements.MUST_NOT;

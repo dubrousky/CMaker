@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
  * Registers highlighter in the plugin.xml
  */
 public class CMakeHighlighterFactory extends SyntaxHighlighterFactory {
+    static final CMakeHighlighter INSTANCE = new CMakeHighlighter();
     /**
      * *
      * @param project
@@ -19,6 +20,6 @@ public class CMakeHighlighterFactory extends SyntaxHighlighterFactory {
     @NotNull
     @Override
     public SyntaxHighlighter getSyntaxHighlighter(Project project, VirtualFile virtualFile) {
-        return new CMakeHighlighter();
+        return INSTANCE;
     }
 }

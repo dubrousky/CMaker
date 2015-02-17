@@ -14,6 +14,6 @@ public class CMakeTokenType extends IElementType {
 
     @Override
     public String toString() {
-        return "CMakeTokenType." + super.toString();
+        return super.toString();
     }
 }

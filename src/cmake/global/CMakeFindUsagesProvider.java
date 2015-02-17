@@ -28,7 +28,10 @@ import cmake.parsing.CMakeLexerAdapter;
 public class CMakeFindUsagesProvider implements FindUsagesProvider {
     private static final DefaultWordsScanner WORDS_SCANNER =
             new DefaultWordsScanner(new CMakeLexerAdapter(),
-                    TokenSet.create(CMakeTypes.COMMAND_NAME), TokenSet.create(CMakeTypes.LINE_COMMENT), TokenSet.EMPTY);
+                    TokenSet.create(CMakeTypes.COMMAND_NAME),
+                    TokenSet.create(CMakeTypes.LINE_COMMENT,
+                                    CMakeTypes.BRACKET_COMMENT),
+                    TokenSet.EMPTY);
     @Nullable
     @Override
     public WordsScanner getWordsScanner() {
@@ -37,7 +40,7 @@ public class CMakeFindUsagesProvider implements FindUsagesProvider {
 
     @Override
     public boolean canFindUsagesFor(PsiElement psiElement) {
-        return psiElement instanceof CMakeNamedElement;
+        return true;/*psiElement instanceof CMakeNamedElement;*/
     }
 
     @Nullable

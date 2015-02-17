@@ -1,0 +1,28 @@
+<div class="section" id="message">
+    <span id="command:message"></span><h1>message</h1>
+    <p>Display a message to the user.</p>
+    <div class="highlight-python"><div class="highlight"><pre>message([&lt;mode&gt;] &quot;message to display&quot; ...)
+</pre></div>
+    </div>
+    <p>The optional &lt;mode&gt; keyword determines the type of message:</p>
+    <div class="highlight-python"><div class="highlight"><pre>(none)         = Important information
+STATUS         = Incidental information
+WARNING        = CMake Warning, continue processing
+AUTHOR_WARNING = CMake Warning (dev), continue processing
+SEND_ERROR     = CMake Error, continue processing,
+                              but skip generation
+FATAL_ERROR    = CMake Error, stop processing and generation
+DEPRECATION    = CMake Deprecation Error or Warning if variable
+                 CMAKE_ERROR_DEPRECATED or CMAKE_WARN_DEPRECATED
+                 is enabled, respectively, else no message.
+</pre></div>
+    </div>
+    <p>The CMake command-line tool displays STATUS messages on stdout and all
+        other message types on stderr.  The CMake GUI displays all messages in
+        its log area.  The interactive dialogs (ccmake and CMakeSetup) show
+        STATUS messages one at a time on a status line and other messages in
+        interactive pop-up boxes.</p>
+    <p>CMake Warning and Error message text displays using a simple markup
+        language.  Non-indented text is formatted in line-wrapped paragraphs
+        delimited by newlines.  Indented text is considered pre-formatted.</p>
+</div>

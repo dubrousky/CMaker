@@ -36,6 +36,7 @@ public class CMakeParserUtilImpl {
 
     public static PsiElement setName(CMakeCommandName element, String newName) {
         ASTNode commandNameNode = element.getFirstChild().getNode();
+// FIXME: node replacement
 //        if (commandNameNode != null) {
 //            CMakeCommandName newNode = CMakeTypes.Factory.createElement(new CMakeN)
 //            ASTNode newKeyNode = property.getFirstChild().getNode();
@@ -47,6 +48,7 @@ public class CMakeParserUtilImpl {
     public static class CMakeNamedElementFactory {
 //        public static CMake createElement(Project project, String name) {
 //            final CMakeFile file = createFile(project, name);
+        // TODO: use tree walker to get command name in AST
 //            return (SimpleProperty) file.getFirstChild();
 //        }
 
@@ -71,17 +73,28 @@ public class CMakeParserUtilImpl {
             @Nullable
             @Override
             public String getPresentableText() {
-                CMakeArguments args = ((CMakeCommandExpr) element).getArguments();
                 StringBuilder stringBuilder = new StringBuilder();
-                if(args.getTextLength()>0) {
-                    stringBuilder.append(args.getArgument().getText())
-                            .append("(");
-                    for (PsiElement a : args.getSeparatedArgumentList()) {
-                        stringBuilder.append(" ");
-                        stringBuilder.append(a.getText());
+                CMakeArguments args = ((CMakeCommandExpr) element).getArguments();
+                if(element.getFirstChild().getText().contains("set")
+                        || element.getFirstChild().getText().contains("list")
+                        || element.getFirstChild().getText().contains("option"))
+                {
+                    stringBuilder.append(args.getArgument());
+                    stringBuilder.append(" : ");
+                    stringBuilder.append(element.getFirstChild().getText());
+                }    
+                else
+                {
+                    if (args.getTextLength() > 0) {
+                        stringBuilder.append(args.getArgument().getText())
+                                .append("(");
+                        for (PsiElement a : args.getSeparatedArgumentList()) {
+                            stringBuilder.append(" ");
+                            stringBuilder.append(a.getText());
+                        }
+                        stringBuilder.append(" ) : ")
+                                .append(element.getFirstChild().getText());
                     }
-                    stringBuilder.append(" ) : ")
-                            .append(element.getFirstChild().getText());
                 }
                 return  stringBuilder.toString();
             }
@@ -100,8 +113,13 @@ public class CMakeParserUtilImpl {
                     return CMakeIcons.FUN;
                 else if(element.getFirstChild().getText().contains("macro"))
                     return CMakeIcons.MACRO;
-                else 
-                    return null;
+                else if(element.getFirstChild().getText().contains("set")
+                            || element.getFirstChild().getText().contains("list")
+                            || element.getFirstChild().getText().contains("option"))
+                {
+                    return CMakeIcons.FILE;
+                }
+                return null;
             }
         };
     }
@@ -148,8 +166,7 @@ public class CMakeParserUtilImpl {
                         super.visitElement(element);
                         if(element instanceof CMakeCommandExpr
                                 && (element.getFirstChild().getNode().getElementType() == CMakeTypes.FUNCTION
-                                    || element.getFirstChild().getNode().getElementType() == CMakeTypes.MACRO
-                                    || element.getFirstChild().toString().equalsIgnoreCase("set")))
+                                    || element.getFirstChild().getNode().getElementType() == CMakeTypes.MACRO))
                         {
                             result.add(element);
                         }
@@ -169,8 +186,7 @@ public class CMakeParserUtilImpl {
                     super.visitElement(element);
                     if(element instanceof CMakeCommandExpr
                             && (element.getFirstChild().getNode().getElementType() == CMakeTypes.FUNCTION
-                            || element.getFirstChild().getNode().getElementType() == CMakeTypes.MACRO
-                            || element.getFirstChild().toString().equalsIgnoreCase("set")))
+                            || element.getFirstChild().getNode().getElementType() == CMakeTypes.MACRO))
                     {
                         result.add(element);
                     }

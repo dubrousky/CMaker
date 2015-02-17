@@ -44,6 +44,7 @@ public class CMakeDocumentationProvider extends AbstractDocumentationProvider {
                 if (activeLookup.isFocused()) {
                     //CMakePsiElementFactory elementFactory = new CmakePsiElementFactory(psiManager.getProject());
                     try {
+                        return null;
                     //    return elementFactory.createSymbol(object.toString());
                     } catch (Exception e) {
                         return null;

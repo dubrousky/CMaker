@@ -30,9 +30,6 @@ public class CMakeFoldingBuilder extends FoldingBuilderEx implements DumbAware {
         CMakeFile file = (CMakeFile) root;
         
         final List<FoldingDescriptor> result = ContainerUtil.newArrayList();
-        /*for (ErlangFunction function : file.getFunctions()) {
-            result.add(new FoldingDescriptor(function, function.getTextRange()));
-        }*/
 
         if (!quick) {
             // Add condition to check if tokens pair
@@ -46,18 +43,6 @@ public class CMakeFoldingBuilder extends FoldingBuilderEx implements DumbAware {
                     ).contains(element.getNode().getElementType()) && element.getTextRange().getLength() > 2) {
                         result.add(new FoldingDescriptor(element, element.getTextRange()));
                     }
-                    /*else if(element.getNode().getElementType() == CMakeTypes.ENDIF_EXPR)
-                    {
-                        // find previous expr and fold it together with endif
-                        PsiElement prev = element.getPrevSibling();
-                        while(prev.getNode().getElementType() != CMakeTypes.PREDICATE_EXPR)
-                        {
-                            prev = prev.getPrevSibling();
-                        }
-                        TextRange r = new TextRange(prev.getTextOffset(),
-                                element.getTextOffset()+element.getTextLength());
-                        result.add(new FoldingDescriptor(prev,r));
-                    }*/
                     return true;
                 }
             });
@@ -70,7 +55,6 @@ public class CMakeFoldingBuilder extends FoldingBuilderEx implements DumbAware {
     @Override
     public String getPlaceholderText(@NotNull ASTNode node) {
         PsiElement psi = node.getPsi();
-        //if (cmake.psi instanceof ErlangFunction) return ErlangPsiImplUtil.createFunctionPresentation((ErlangFunction) cmake.psi) + " -> ...";
         IElementType type = node.getElementType();
         if (CMakeTypes.BRACKET_COMMENT == type) return "[[ ... ]]";
         if (CMakeTypes.COMPOUND_EXPR  == type)
